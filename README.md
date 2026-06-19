@@ -14,14 +14,25 @@ OpenWalls is a wallpaper discovery and curation platform focused on high-resolut
 ## Features
 
 - Minimalist, content-first gallery experience
-- Responsive masonry grid layout
+- Responsive masonry grid layout with hover overlays
 - Category-based browsing (Minimalism, Cyberpunk, Landscape, etc.)
 - Search and filter by themes, colors, and tags
-- Creator submission workflow
+- Brutalist-styled login and signup pages
+- Sticky navigation bar with active route highlighting
+- Footer with legal and social links
+
+## Pages
+
+| Page | Route | Status |
+|------|-------|--------|
+| Home | `/` | Complete |
+| Categories | `/category` | Complete |
+| Login | `/login` | Complete |
+| Sign Up | `/signup` | Complete |
 
 ## Status
 
-**Under development.** Core UI components and design system are in place. Backend API routes and full page implementations are pending.
+**Under development.** Core UI components, design system, and all pages are in place. Backend API routes and authentication logic are pending.
 
 ## Getting Started
 
@@ -49,8 +60,16 @@ npm run start
 openwalls/
 ├── frontend/          # Next.js 16 application
 │   └── src/
-│       ├── app/       # Pages and layouts
-│       └── components/# Reusable UI components
+│       ├── app/
+│       │   ├── (pages)/
+│       │   │   ├── (homepage)/   # Home page with masonry grid
+│       │   │   ├── category/     # Category listing
+│       │   │   ├── login/        # Sign in page
+│       │   │   └── signup/       # Create account page
+│       │   ├── globals.css       # Theme tokens and utilities
+│       │   └── layout.tsx        # Root layout
+│       ├── components/           # Navbar, Footer
+│       └── utils/                # Helpers
 ├── backend/           # Express API server
 │   └── src/
 │       ├── routes/    # API route definitions
