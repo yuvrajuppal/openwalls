@@ -1,1 +1,1 @@
-    export const prodmode = false       
+    export const prodmode = true       
