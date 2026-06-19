@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { prodmode } from "@/utils/production";
 
 import "./globals.css";
 
@@ -20,7 +21,20 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-full flex flex-col bg-background text-on-background font-body-md selection:bg-primary selection:text-on-primary">{children}</body>
+      <body className="min-h-full flex flex-col bg-background text-on-background font-body-md selection:bg-primary selection:text-on-primary">
+        {!prodmode && (
+          <div className="sticky top-0 z-[60] w-full bg-surface-container-low border-b border-outline-variant">
+            <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex items-center justify-between h-9">
+              <div className="flex items-center gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                <span className="font-label-sm text-label-sm text-secondary tracking-wider">Under Development</span>
+              </div>
+              <span className="font-meta-data text-meta-data text-outline tracking-[0.2em] uppercase">DEV</span>
+            </div>
+          </div>
+        )}
+        {children}
+      </body>
     </html>
   );
 }

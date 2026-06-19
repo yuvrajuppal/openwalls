@@ -1,26 +1,30 @@
 "use client";
 
-import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 
-export default function LoginPage() {
+export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [nameFocused, setNameFocused] = useState(false);
   const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
+  const [confirmFocused, setConfirmFocused] = useState(false);
 
   return (
     <main className="flex-1 flex items-center justify-center py-24 md:py-36 px-margin-mobile md:px-margin-desktop">
       <div className="w-full max-w-md">
-        {/* Header */}
         <div className="mb-12 border-l-4 border-primary pl-6">
           <span className="font-label-sm text-label-sm text-secondary uppercase tracking-[0.2em] mb-2 block">
-            Welcome back
+            Get started
           </span>
           <h1 className="font-display-lg text-display-lg-mobile md:text-display-lg tracking-tighter uppercase">
-            Sign In
+            Create Account
           </h1>
         </div>
 
@@ -28,6 +32,30 @@ export default function LoginPage() {
           className="flex flex-col gap-8"
           onSubmit={(e) => e.preventDefault()}
         >
+          {/* Name */}
+          <div className="relative group">
+            <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+              <User
+                className={`w-5 h-5 transition-colors ${
+                  nameFocused ? "text-primary" : "text-secondary"
+                }`}
+              />
+            </div>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onFocus={() => setNameFocused(true)}
+              onBlur={() => setNameFocused(false)}
+              placeholder="Full name"
+              className={`w-full h-14 pl-14 pr-5 bg-transparent border-2 border-primary focus:ring-0 font-body-md text-base transition-all outline-none rounded-none ${
+                nameFocused
+                  ? "shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
+                  : "shadow-[4px_4px_0px_0px_rgba(0,0,0,0.05)]"
+              }`}
+            />
+          </div>
+
           {/* Email */}
           <div className="relative group">
             <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
@@ -87,14 +115,39 @@ export default function LoginPage() {
             </button>
           </div>
 
-          {/* Forgot password */}
-          <div className="flex justify-end">
-            <a
-              href="#"
-              className="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors uppercase tracking-wider"
+          {/* Confirm Password */}
+          <div className="relative group">
+            <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+              <Lock
+                className={`w-5 h-5 transition-colors ${
+                  confirmFocused ? "text-primary" : "text-secondary"
+                }`}
+              />
+            </div>
+            <input
+              type={showConfirm ? "text" : "password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              onFocus={() => setConfirmFocused(true)}
+              onBlur={() => setConfirmFocused(false)}
+              placeholder="Confirm password"
+              className={`w-full h-14 pl-14 pr-14 bg-transparent border-2 border-primary focus:ring-0 font-body-md text-base transition-all outline-none rounded-none ${
+                confirmFocused
+                  ? "shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
+                  : "shadow-[4px_4px_0px_0px_rgba(0,0,0,0.05)]"
+              }`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirm(!showConfirm)}
+              className="absolute inset-y-0 right-5 flex items-center text-secondary hover:text-primary transition-colors"
             >
-              Forgot password?
-            </a>
+              {showConfirm ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
+            </button>
           </div>
 
           {/* Submit */}
@@ -102,7 +155,7 @@ export default function LoginPage() {
             type="submit"
             className="w-full h-14 bg-primary text-on-primary font-label-sm text-label-sm uppercase tracking-wider hover:bg-secondary transition-colors active:scale-[0.99]"
           >
-            Sign In
+            Create Account
           </button>
         </form>
 
@@ -115,14 +168,14 @@ export default function LoginPage() {
           <div className="flex-1 h-px bg-outline-variant" />
         </div>
 
-        {/* Sign up */}
+        {/* Sign in */}
         <p className="text-center font-body-md text-base text-secondary">
-          Don&apos;t have an account?{" "}
+          Already have an account?{" "}
           <Link
-            href="/signup"
+            href="/login"
             className="text-primary font-bold underline underline-offset-4 hover:opacity-70 transition-opacity"
           >
-            Create one
+            Sign in
           </Link>
         </p>
       </div>

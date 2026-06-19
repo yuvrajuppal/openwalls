@@ -6,13 +6,19 @@
   --color-on-primary: #ffffff;
   --color-secondary: #5d5f5f;
   --color-on-secondary: #ffffff;
+  --color-outline: #7e7576;
   --color-outline-variant: #cfc4c5;
 
   --color-on-background: #1a1c1c;
+  --color-surface-container: #eeeeee;
+  --color-surface-container-high: #e8e8e8;
 
   --font-display-lg: "Geist", sans-serif;
   --font-label-sm: "JetBrains Mono", monospace;
+  --font-meta-data: "JetBrains Mono", monospace;
+  --font-headline-md: "Geist", sans-serif;
   --font-body-md: "Inter", sans-serif;
+  --font-body-lg: "Inter", sans-serif;
 
   --text-headline-md: 24px;
   --text-headline-md--line-height: 1.3;
@@ -23,7 +29,71 @@
   --text-label-sm--letter-spacing: 0.05em;
   --text-label-sm--font-weight: 500;
 
+  --text-meta-data: 11px;
+  --text-meta-data--line-height: 1.4;
+  --text-meta-data--font-weight: 400;
+
+  --text-display-lg-mobile: 32px;
+  --text-display-lg-mobile--line-height: 1.2;
+  --text-display-lg-mobile--letter-spacing: -0.02em;
+  --text-display-lg-mobile--font-weight: 700;
+
+  --text-display-lg: 48px;
+  --text-display-lg--line-height: 1.1;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg--font-weight: 700;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 1.6;
+  --text-body-lg--font-weight: 400;
+
   --spacing-margin-mobile: 16px;
   --spacing-margin-desktop: 64px;
+  --spacing-gutter: 24px;
   --width-container-max: 1440px;
+}
+
+.masonry-grid {
+  columns: 1;
+  column-gap: 24px;
+}
+@media (min-width: 768px) { .masonry-grid { columns: 2; } }
+@media (min-width: 1024px) { .masonry-grid { columns: 3; } }
+
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: 24px;
+}
+
+.overlay-target .overlay-content {
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.overlay-target:hover .overlay-content {
+  opacity: 1;
+}
+.overlay-target .image-zoom {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.overlay-target:hover .image-zoom {
+  transform: scale(1.05);
+}
+
+.category-card:hover .card-bg {
+  transform: scale(1.05);
+  filter: grayscale(0) brightness(0.8);
+}
+.category-card:hover .card-overlay {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.card-bg {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
