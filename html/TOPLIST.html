@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Toplist | OpenWalls</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Geist:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-background": "#1a1c1c",
+                    "surface-container-low": "#f3f3f3",
+                    "primary-container": "#1b1b1b",
+                    "on-secondary-fixed-variant": "#454747",
+                    "on-primary-fixed": "#1b1b1b",
+                    "tertiary-fixed": "#e2e2e2",
+                    "surface-bright": "#f9f9f9",
+                    "secondary": "#5d5f5f",
+                    "surface-variant": "#e2e2e2",
+                    "on-surface": "#1a1c1c",
+                    "tertiary-container": "#1b1b1b",
+                    "secondary-container": "#dfe0e0",
+                    "on-error": "#ffffff",
+                    "tertiary": "#000000",
+                    "inverse-on-surface": "#f1f1f1",
+                    "primary": "#000000",
+                    "surface-tint": "#5e5e5e",
+                    "on-primary-container": "#848484",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-container": "#616363",
+                    "on-primary-fixed-variant": "#474747",
+                    "surface-container-high": "#e8e8e8",
+                    "surface-container": "#eeeeee",
+                    "secondary-fixed": "#e2e2e2",
+                    "on-secondary-fixed": "#1a1c1c",
+                    "surface-dim": "#dadada",
+                    "outline-variant": "#cfc4c5",
+                    "error-container": "#ffdad6",
+                    "outline": "#7e7576",
+                    "secondary-fixed-dim": "#c6c6c7",
+                    "surface": "#f9f9f9",
+                    "inverse-surface": "#2f3131",
+                    "background": "#f9f9f9",
+                    "on-tertiary-container": "#848484",
+                    "surface-container-highest": "#e2e2e2",
+                    "on-tertiary-fixed-variant": "#474747",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#e2e2e2",
+                    "on-surface-variant": "#4c4546",
+                    "on-tertiary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "margin-desktop": "64px",
+                    "unit": "4px",
+                    "gutter": "24px",
+                    "container-max": "1440px"
+            },
+            "fontFamily": {
+                    "meta-data": ["JetBrains Mono"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg-mobile": ["Geist"],
+                    "display-lg": ["Geist"],
+                    "label-sm": ["JetBrains Mono"],
+                    "headline-md": ["Geist"]
+            },
+            "fontSize": {
+                    "meta-data": ["11px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .masonry-grid {
+            column-count: 1;
+            column-gap: 24px;
+        }
+        @media (min-width: 768px) { .masonry-grid { column-count: 2; } }
+        @media (min-width: 1024px) { .masonry-grid { column-count: 3; } }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 24px;
+        }
+        .text-outline-thin {
+            -webkit-text-stroke: 1px #000;
+            color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md selection:bg-primary selection:text-on-primary">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-on-background w-full top-0 border-b border-secondary-container dark:border-on-secondary-fixed-variant z-50 sticky">
+<div class="flex justify-between items-center h-16 px-margin-desktop max-w-container-max mx-auto">
+<div class="font-headline-md text-headline-md font-bold tracking-tighter text-primary dark:text-primary-fixed">
+                OpenWalls
+            </div>
+<nav class="hidden md:flex items-center gap-8 font-label-sm text-label-sm">
+<a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Home</a>
+<a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Categories</a>
+<a class="text-primary dark:text-primary-fixed font-bold border-b border-primary dark:border-primary-fixed pb-1" href="#">Toplist</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-surface-container dark:hover:bg-surface-variant transition-all rounded-full">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button class="md:hidden p-2">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-container-max mx-auto px-margin-desktop py-12 min-h-screen">
+<!-- Header Section -->
+<section class="mb-16 border-l-4 border-primary pl-6">
+<h1 class="font-display-lg text-display-lg mb-2">Toplist</h1>
+<p class="font-body-lg text-body-lg text-secondary max-w-2xl">
+                The most popular high-resolution architectural and minimalist wallpapers as ranked by the community. Precision-curated excellence.
+            </p>
+<div class="mt-8 flex gap-4">
+<button class="px-6 py-2 bg-primary text-on-primary font-label-sm text-label-sm tracking-widest uppercase hover:opacity-90 transition-opacity">
+                    All Time
+                </button>
+<button class="px-6 py-2 border border-primary text-primary font-label-sm text-label-sm tracking-widest uppercase hover:bg-primary hover:text-on-primary transition-all">
+                    Last 30 Days
+                </button>
+</div>
+</section>
+<!-- Rankings Grid -->
+<div class="masonry-grid">
+<!-- Rank #1 - Featured Big -->
+<div class="masonry-item group relative cursor-crosshair">
+<div class="absolute top-4 left-4 z-10 font-display-lg text-display-lg text-white drop-shadow-lg flex flex-col">
+<span class="font-meta-data text-meta-data tracking-widest uppercase mb-[-8px] opacity-80">Rank</span>
+                    #1
+                </div>
+<div class="absolute top-4 right-4 z-10 bg-white/90 px-3 py-1 text-black font-label-sm text-label-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span>
+                    TRENDING
+                </div>
+<div class="relative overflow-hidden aspect-[4/5] bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A minimalist architectural photography piece showing a brutalist concrete building with sharp angular shadows against a stark white sky. The image is captured in high contrast monochrome, emphasizing geometric textures and clean lines. The mood is industrial, sophisticated, and cold, fitting a premium wallpaper aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnHf8W6z2nexCVMl980dFQjurQsiTyhld5aEk04sRuZbuI1fv5ZjLKvQZs0Y7mmdFn3z1ON-8j3xXcWeB-hK4qA3kLqetCeN7sYfP2Cfdw4a6l64EFC93hbDeh4YgjLYsAcdO4BaoFrH__UayhO1jeQDyzj3v8T2as5f2wQQ8lHJyDOxh_IF9jc_UbYVJCHZY2EjAJP4A9rz7_ndmBdfw7--iNGJauekTv4nLVA1hc5l8Kpq6FiSvJHT_0wWgh-F7JyqGn3nzwI1s"/>
+</div>
+<div class="mt-4 flex justify-between items-end border-b border-outline-variant pb-4 group-hover:border-primary transition-colors">
+<div>
+<h3 class="font-headline-md text-headline-md uppercase tracking-tight">Vortex Concrete</h3>
+<p class="font-meta-data text-meta-data text-secondary">4K • 3840 x 2160 • JPG</p>
+</div>
+<div class="text-right">
+<div class="flex items-center justify-end gap-1 font-label-sm text-label-sm mb-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="download">download</span>
+                            12.4K
+                        </div>
+<button class="font-label-sm text-label-sm uppercase underline tracking-tighter hover:text-primary">Download</button>
+</div>
+</div>
+</div>
+<!-- Rank #2 -->
+<div class="masonry-item group relative cursor-crosshair">
+<div class="absolute top-4 left-4 z-10 font-display-lg text-display-lg text-black flex flex-col">
+<span class="font-meta-data text-meta-data tracking-widest uppercase mb-[-8px] opacity-60">Rank</span>
+                    #2
+                </div>
+<div class="relative overflow-hidden aspect-square bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A macro photograph of dark ripples in water, appearing as fluid charcoal silk. The lighting highlights the crystalline edges of each wave against a deep black background. The style is abstract, minimalist, and ultra-high resolution, focusing on the organic but sharp flow of dark liquid in a high-key studio setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuM_h3BvonvM3KJLmaNPPdLtiEk90CD_mGchLiyMmPQdxe3M9Zr4ZG1pDhr8FNoyCvZK1xa4igzzoyWa0VsotbCTjLYwSsX3HhMZJKxbYFyKIP2jM8BkzBOkCysK5WofWzoAJArN43bVqpXAaX6i9wjKnqnprDlmAIutov4RwLKQJsZ4ZRosW5PSzkz51LXFyqdcyXd0cBuySsG8yNCIf-G8IR0cLp46Q0ZgnwtUPz1Lh5bPyj49RqQ-dvA-R-aGTw7-scbA5rUeI"/>
+</div>
+<div class="mt-4 flex justify-between items-end border-b border-outline-variant pb-4 group-hover:border-primary transition-colors">
+<div>
+<h3 class="font-headline-md text-headline-md uppercase tracking-tight">Liquid Carbon</h3>
+<p class="font-meta-data text-meta-data text-secondary">8K • 7680 x 4320 • PNG</p>
+</div>
+<div class="text-right">
+<div class="flex items-center justify-end gap-1 font-label-sm text-label-sm mb-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="download">download</span>
+                            9.8K
+                        </div>
+<button class="font-label-sm text-label-sm uppercase underline tracking-tighter hover:text-primary">Download</button>
+</div>
+</div>
+</div>
+<!-- Rank #3 -->
+<div class="masonry-item group relative cursor-crosshair">
+<div class="absolute top-4 left-4 z-10 font-display-lg text-display-lg text-white drop-shadow-lg flex flex-col">
+<span class="font-meta-data text-meta-data tracking-widest uppercase mb-[-8px] opacity-80">Rank</span>
+                    #3
+                </div>
+<div class="relative overflow-hidden aspect-[3/4] bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="An ultra-minimalist interior shot of a single black designer chair in a vast white hall with soft zenithal lighting. Long shadows stretch across the polished white floor. The aesthetic is extremely clean, leaning into negative space and high-end industrial design. The color palette is strictly limited to black and white." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSPQoraUQTHVGXdW1x7qGUAoVGDgKiT8mvDblj6bTS__ZZI7VNlOipH0T3lH3u6njGJHGXetEFbh-RZduc7gPmPpNIJPBo-YcqQrAA7_tNRCek25dbQm7HTJ6MDhFFjDV-6m5ZsNu-iD9xddBs52a4ICK-_wv5lfz_972S9Zv8NqNX07jYjHqWXcN4echSBhmh4zkNVxcAAu49uR9bGI6kn-HZjiEKXbFTj8lD_UIDPfo4iyh_nm3qCrCUrrPlcCHd1YL1Tvb3XKc"/>
+</div>
+<div class="mt-4 flex justify-between items-end border-b border-outline-variant pb-4 group-hover:border-primary transition-colors">
+<div>
+<h3 class="font-headline-md text-headline-md uppercase tracking-tight">Silent Space</h3>
+<p class="font-meta-data text-meta-data text-secondary">4K • 3840 x 2160 • JPG</p>
+</div>
+<div class="text-right">
+<div class="flex items-center justify-end gap-1 font-label-sm text-label-sm mb-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="download">download</span>
+                            8.2K
+                        </div>
+<button class="font-label-sm text-label-sm uppercase underline tracking-tighter hover:text-primary">Download</button>
+</div>
+</div>
+</div>
+<!-- Rank #4 -->
+<div class="masonry-item group relative cursor-crosshair">
+<div class="absolute top-4 left-4 z-10 font-display-lg text-display-lg text-black flex flex-col">
+<span class="font-meta-data text-meta-data tracking-widest uppercase mb-[-8px] opacity-60">Rank</span>
+                    #4
+                </div>
+<div class="absolute top-4 right-4 z-10 bg-black/90 px-3 py-1 text-white font-label-sm text-label-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]" data-icon="bolt">bolt</span>
+                    HOT
+                </div>
+<div class="relative overflow-hidden aspect-video bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A technical, glitch-art inspired wallpaper featuring vertical bars of varying grays and whites. The design is inspired by 90s CRT distortion but reimagined as a clean vector graphic. Sharp edges, fine grain texture, and a sense of digital data transmission. The mood is tech-focused and precise." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzT4se0OxHJxE3JbuaFAghPM6YZWt2qCakAbowyTS5UXtPOKlXlUVpM1wRAeDtuTM2NQnG0u43U81rEmHTCeqsfOJRFI5YR65tzzJr4YZZJV-uad6MNy1vovs_ZutAkXHj3hGVg7bViortOhPp1GdnnXlwD5sUXFwDiq7tu4UvQkHYS2SCaBA7lztNGRVkbtFGYfiszkHWESuB22pfEDcgxy33aenGDo_gPwqT8Jpf90hOYHvlnrY8gj-IBVvRDZGnECgnVMj06fk"/>
+</div>
+<div class="mt-4 flex justify-between items-end border-b border-outline-variant pb-4 group-hover:border-primary transition-colors">
+<div>
+<h3 class="font-headline-md text-headline-md uppercase tracking-tight">Signal Loss</h3>
+<p class="font-meta-data text-meta-data text-secondary">5K • 5120 x 2880 • JPG</p>
+</div>
+<div class="text-right">
+<div class="flex items-center justify-end gap-1 font-label-sm text-label-sm mb-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="download">download</span>
+                            7.5K
+                        </div>
+<button class="font-label-sm text-label-sm uppercase underline tracking-tighter hover:text-primary">Download</button>
+</div>
+</div>
+</div>
+<!-- Rank #5 -->
+<div class="masonry-item group relative cursor-crosshair">
+<div class="absolute top-4 left-4 z-10 font-display-lg text-display-lg text-white flex flex-col">
+<span class="font-meta-data text-meta-data tracking-widest uppercase mb-[-8px] opacity-80">Rank</span>
+                    #5
+                </div>
+<div class="relative overflow-hidden aspect-square bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A dark forest shrouded in dense white fog. Only the skeletal silhouettes of tall pine trees are visible against the misty void. The image is eerie but serene, focusing on the soft gradient from deep charcoal to pure white. The aesthetic is atmospheric and cinematic with high information density in the tree textures." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAw9FADpxJv1azNzRU2C-jtZLYAZDEf-ukUD5xoF0ozE5rEPxx1BdJ5S4sas0DFEcPp27Ih328VwTMmTFX3CSch96P94BZYLoRoEue7MoXBnuuf9LfSkvrA6OD8LXAFT08qfi_wxC7iPvn0bMAduqqZxxQPkiK7W16baAx_HEMmkh9BcFK-H12ujJp5Bg5tJ2f60wcCb8zBy8l0nRHcmLPNQKZB2L2PI3glH_jBuqoZMv5PXZeriUm4xJxnvpnus1puzHHzb8PR4NQ"/>
+</div>
+<div class="mt-4 flex justify-between items-end border-b border-outline-variant pb-4 group-hover:border-primary transition-colors">
+<div>
+<h3 class="font-headline-md text-headline-md uppercase tracking-tight">Misty Pines</h3>
+<p class="font-meta-data text-meta-data text-secondary">4K • 3840 x 2160 • PNG</p>
+</div>
+<div class="text-right">
+<div class="flex items-center justify-end gap-1 font-label-sm text-label-sm mb-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="download">download</span>
+                            6.9K
+                        </div>
+<button class="font-label-sm text-label-sm uppercase underline tracking-tighter hover:text-primary">Download</button>
+</div>
+</div>
+</div>
+<!-- Rank #6 -->
+<div class="masonry-item group relative cursor-crosshair">
+<div class="absolute top-4 left-4 z-10 font-display-lg text-display-lg text-black flex flex-col">
+<span class="font-meta-data text-meta-data tracking-widest uppercase mb-[-8px] opacity-60">Rank</span>
+                    #6
+                </div>
+<div class="relative overflow-hidden aspect-[4/3] bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Top-down shot of a minimalist workstation featuring only a high-end mechanical keyboard and a sleek mouse on a massive white desk pad. The lighting is harsh and directional from the side, creating long dramatic shadows. Everything is in shades of off-white and charcoal gray. Minimalist, professional, and desk-setup focused." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlzBwVLvXrSHK6p6Z9K0Uj5txoH-ZKAR0c2_PbK1eJz4Eml6o8OSx48k7sJh8T6Lo90wk_yYJi335tByimHJxyMvSulaCJHAZFsAZthKvsI0jm8cOXTvSVgICnjZ8UPqtY909ZcNEgCGS5hjibGuVWyMj-ojYexKYxG_Q9HyxCTmuV-y-VXGhdAPeksh-BsiMl0zBo2puHtHaf_fiANsXv4BsMpxblxa2i06QEnok-oFlx4MCVW9BR54w-F9mJ5NYpjQFiu5yi7vU"/>
+</div>
+<div class="mt-4 flex justify-between items-end border-b border-outline-variant pb-4 group-hover:border-primary transition-colors">
+<div>
+<h3 class="font-headline-md text-headline-md uppercase tracking-tight">Monolith Desk</h3>
+<p class="font-meta-data text-meta-data text-secondary">4K • 3840 x 2160 • JPG</p>
+</div>
+<div class="text-right">
+<div class="flex items-center justify-end gap-1 font-label-sm text-label-sm mb-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="download">download</span>
+                            5.4K
+                        </div>
+<button class="font-label-sm text-label-sm uppercase underline tracking-tighter hover:text-primary">Download</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination / Load More -->
+<div class="mt-24 text-center">
+<button class="group inline-flex flex-col items-center gap-4">
+<span class="font-label-sm text-label-sm tracking-[0.2em] uppercase text-secondary group-hover:text-primary transition-colors">View More Rankings</span>
+<div class="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+<span class="material-symbols-outlined" data-icon="expand_more">expand_more</span>
+</div>
+</button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface dark:bg-on-background w-full bottom-0 border-t border-secondary-container dark:border-on-secondary-fixed-variant">
+<div class="flex flex-col md:flex-row justify-between items-center py-8 px-margin-desktop max-w-container-max mx-auto">
+<div class="font-label-sm text-label-sm font-bold text-primary dark:text-primary-fixed mb-4 md:mb-0">
+                OpenWalls
+            </div>
+<div class="flex gap-6 mb-4 md:mb-0 font-meta-data text-meta-data text-secondary dark:text-secondary-fixed-dim">
+<a class="hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Terms</a>
+<a class="hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Privacy</a>
+<a class="hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">API</a>
+<a class="hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">GitHub</a>
+</div>
+<div class="font-meta-data text-meta-data text-secondary dark:text-secondary-fixed-dim opacity-80">
+                © 2024 OpenWalls
+            </div>
+</div>
+</footer>
+<script>
+        // Simple scroll micro-interaction for the navbar
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-sm');
+            } else {
+                header.classList.remove('shadow-sm');
+            }
+        });
+
+        // Hover effect for the rank numbers
+        document.querySelectorAll('.masonry-item').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                const rank = item.querySelector('.font-display-lg');
+                if(rank) rank.classList.add('scale-110');
+            });
+            item.addEventListener('mouseleave', () => {
+                const rank = item.querySelector('.font-display-lg');
+                if(rank) rank.classList.remove('scale-110');
+            });
+        });
+    </script>
+</body></html>

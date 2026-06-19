@@ -40,7 +40,7 @@ export default function Navbar() {
           </div>
         </div>
         <div className="flex items-center gap-8">
-          <Search className="text-primary cursor-pointer active:opacity-70 w-[22px] h-[22px]" />
+          <Link href="/search"><Search className="text-primary cursor-pointer active:opacity-70 w-[22px] h-[22px]" /></Link>
           <Link className="bg-primary text-on-primary px-6 py-2.5 font-label-sm text-label-sm tracking-wider uppercase hover:bg-secondary transition-colors active:scale-95" href="/login">Login</Link>
         </div>
       </div>

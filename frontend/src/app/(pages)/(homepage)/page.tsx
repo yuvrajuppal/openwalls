@@ -2,6 +2,7 @@
 
 import { Search, ArrowRight, Heart, Download } from "lucide-react";
 import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 
 const categories = ["Minimalism", "Cyberpunk", "Landscape", "Anime", "Abstract", "Architecture"];
 
@@ -15,12 +16,23 @@ const wallpapers = [
 ];
 
 export default function HomePage() {
+  const router = useRouter();
   const [activeCategory, setActiveCategory] = useState("Minimalism");
   const [searchFocused, setSearchFocused] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
   const handleCategoryClick = useCallback((cat: string) => {
     setActiveCategory(cat);
   }, []);
+
+  const handleSearch = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      const trimmed = searchValue.trim();
+      if (trimmed) router.push(`/search?q=${encodeURIComponent(trimmed)}`);
+    },
+    [searchValue, router]
+  );
 
   return (
     <main className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop w-full">
@@ -28,11 +40,13 @@ export default function HomePage() {
         <h2 className="font-headline-md text-headline-md text-secondary mb-12 max-w-2xl leading-relaxed">
           Curated, high-resolution minimalist wallpapers for the modern interface.
         </h2>
-        <div className="w-full max-w-2xl relative group">
+        <form onSubmit={handleSearch} className="w-full max-w-2xl relative group">
           <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
             <Search className="text-secondary w-5 h-5" />
           </div>
           <input
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
             className={`w-full h-16 pl-16 pr-6 bg-transparent border-2 border-primary focus:ring-0 font-label-sm text-label-sm transition-all outline-none rounded-none ${
               searchFocused ? "shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]" : "shadow-[4px_4px_0px_0px_rgba(0,0,0,0.05)]"
             }`}
@@ -41,7 +55,7 @@ export default function HomePage() {
             onFocus={() => setSearchFocused(true)}
             onBlur={() => setSearchFocused(false)}
           />
-        </div>
+        </form>
       </section>
 
       <section className="mb-16 overflow-x-auto no-scrollbar">
