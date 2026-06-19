@@ -1,0 +1,9 @@
+get api
+https://wallhaven.cc/api/v1/search?sorting=toplist&page=1
+
+category api
+get api
+https://wallhaven.cc/api/v1/tag/1
+
+wallpapers under that category api
+https://wallhaven.cc/api/v1/search?q=lip+gloss&sorting=views&page=1
