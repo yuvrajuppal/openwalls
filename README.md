@@ -72,6 +72,16 @@ npm run dev
 
 The API runs on port 3000 (configured in `.env`).
 
+### .env Setup
+
+Create `backend/.env`:
+
+```env
+SERVERPORT = 3000
+DATABASE_URL="mysql://root@localhost:3306/openwallsdb"
+JWT_SECRET="your-secret-key-here"
+```
+
 ### Database
 
 ```bash
