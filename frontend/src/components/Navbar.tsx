@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 const navLinks = [
   { label: "HOME", href: "/" },
   { label: "CATEGORIES", href: "/category" },
-  { label: "TOPLIST", href: "/toplist" },
+  { label: "ALL WALLPAPERS", href: "/allwallpapers" },
 ];
 
 export default function Navbar() {

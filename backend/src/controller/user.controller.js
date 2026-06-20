@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
 import jwt from "jsonwebtoken";
 
-export async function signup(req, res) {
+export const signup = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
@@ -43,11 +43,11 @@ export async function signup(req, res) {
       user: { uiid: user.uiid, username: user.username, email: user.email },
     });
   } catch (error) {
-    res.status(500).json({ error: "Internal server error.",error:error.message });
+    res.status(500).json({ error: "Internal server error.", error: error.message });
   }
-}
+};
 
-export async function login(req, res) {
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -78,4 +78,4 @@ export async function login(req, res) {
   } catch (error) {
     res.status(500).json({ error: "Internal server error." });
   }
-}
+};

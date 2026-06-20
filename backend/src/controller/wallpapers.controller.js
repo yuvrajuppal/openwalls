@@ -1,6 +1,6 @@
 import { prisma } from "../config/dbconfig.js";
 
-export async function getallcategories(req, res) {
+export const getallcategories = async (req, res) => {
   try {
     const categories = await prisma.wallpapers.groupBy({
       by: ["category"],
@@ -17,9 +17,9 @@ export async function getallcategories(req, res) {
   } catch (error) {
     res.status(500).json({ error: "Internal server error." });
   }
-}
+};
 
-export async function randomwallpapers(req, res) {
+export const randomwallpapers = async (req, res) => {
   try {
     const wallpapers = await prisma.$queryRawUnsafe(
       "SELECT * FROM wallpapers ORDER BY RAND() LIMIT 24"
@@ -29,9 +29,9 @@ export async function randomwallpapers(req, res) {
   } catch (error) {
     res.status(500).json({ error: "Internal server error." });
   }
-}
+};
 
-export async function getAll(req, res) {
+export const getAll = async (req, res) => {
   try {
     const page = Math.max(1, parseInt(req.query.page) || 1);
     const limit = 24;
@@ -46,5 +46,5 @@ export async function getAll(req, res) {
   } catch (error) {
     res.status(500).json({ error: "Internal server error." });
   }
-}
+};
 
