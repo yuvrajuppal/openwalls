@@ -1,0 +1,14 @@
+model wallpapers {
+    id          String   @id
+    category    String
+    file_size   String
+    imagelink   String   @unique
+    file_type   String
+    resolution  String
+    thumbs      String   @unique
+    dimension_x Int
+    dimension_y Int
+    likecount   Int      @default(0)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}

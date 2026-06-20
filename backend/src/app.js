@@ -28,6 +28,9 @@ app.use(
 import userRoutes from "./routes/user.routes.js";
 app.use("/userRoutes", userRoutes);
 
+import wallpaperRoutes from "./routes/wallpapers.routes.js";
+app.use("/api/wallpapers", wallpaperRoutes);
+
 
 
 
