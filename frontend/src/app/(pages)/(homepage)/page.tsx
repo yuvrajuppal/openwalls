@@ -2,8 +2,10 @@
 
 import { ArrowRight, Heart, Download, RefreshCw } from "lucide-react";
 import { useState, useCallback, useEffect } from "react";
+import Link from "next/link";
 import axios from "axios";
 import { APIROUTES } from "@/utils/APIROUTES";
+import { downloadImage } from "@/utils/download";
 
 export default function HomePage() {
   const [wallpapers, setWallpapers] = useState<any[]>([]);
@@ -50,7 +52,7 @@ export default function HomePage() {
       ) : (
         <section className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-gutter mb-32">
           {wallpapers.map((item: any) => (
-            <div key={item.id} className="relative group overlay-target cursor-zoom-in">
+            <Link key={item.id} href={`/allwallpapers/${item.id}`} className="relative group overlay-target cursor-zoom-in block">
               <div className="bg-surface-container aspect-[4/5] overflow-hidden">
                 <img className="w-full h-full object-cover image-zoom" alt={item.id} src={item.thumbs} />
               </div>
@@ -62,11 +64,18 @@ export default function HomePage() {
                   <span className="font-meta-data text-meta-data tracking-[0.15em] uppercase">{item.resolution}</span>
                   <div className="flex gap-6">
                     <Heart className="w-5 h-5 cursor-pointer hover:scale-110 transition-transform fill-none" />
-                    <Download className="w-5 h-5 cursor-pointer hover:scale-110 transition-transform" />
+                    <Download
+                      className="w-5 h-5 cursor-pointer hover:scale-110 transition-transform"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        downloadImage(item.imagelink, `wallpaper-${item.id}`);
+                      }}
+                    />
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </section>
       )}

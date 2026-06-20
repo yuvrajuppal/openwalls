@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { prodmode } from "@/utils/production";
+import ScrollToTop from "@/components/ScrollToTop";
 
 import "./globals.css";
 
@@ -22,6 +24,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-background text-on-background font-body-md selection:bg-primary selection:text-on-primary">
+        <Suspense><ScrollToTop /></Suspense>
         {!prodmode && (
           <div className="sticky top-0 z-[60] w-full bg-surface-container-low border-b border-outline-variant">
             <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex items-center justify-between h-9">

@@ -1,7 +1,7 @@
-export const BASE_URL = "http://localhost:3000";
-
 export const APIROUTES = {
-  randomWallpapers: `${BASE_URL}/api/wallpapers/random`,
-  allWallpapers: `${BASE_URL}/api/wallpapers`,
-  wallpapersCategories: `${BASE_URL}/api/wallpapers/categories`,
+  randomWallpapers: "/api/wallpapers/random",
+  allWallpapers: "/api/wallpapers",
+  wallpapersCategories: "/api/wallpapers/categories",
+  searchWallpapers: "/api/wallpapers/search",
+  wallpaperById: (id: string) => `/api/wallpapers/${id}`,
 };

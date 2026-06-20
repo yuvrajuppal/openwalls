@@ -48,3 +48,47 @@ export const getAll = async (req, res) => {
   }
 };
 
+export const getById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const wallpaper = await prisma.wallpapers.findUnique({ where: { id } });
+
+    if (!wallpaper) {
+      return res.status(404).json({ error: "Wallpaper not found." });
+    }
+
+    res.json(wallpaper);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error." });
+  }
+};
+
+export const getseachresut = async (req, res) => {
+  try {
+    const { q, page: pageQuery } = req.query;
+    const page = Math.max(1, parseInt(pageQuery) || 1);
+    const limit = 24;
+    const skip = (page - 1) * limit;
+
+    if (!q || !q.trim()) {
+      return res.status(400).json({ error: "Query parameter 'q' is required." });
+    }
+
+    const where = {
+      OR: [
+        { id: { contains: q.trim() } },
+        { category: { contains: q.trim() } },
+        { resolution: { contains: q.trim() } },
+      ],
+    };
+
+    const [wallpapers, total] = await Promise.all([
+      prisma.wallpapers.findMany({ where, skip, take: limit, orderBy: { createdAt: "desc" } }),
+      prisma.wallpapers.count({ where }),
+    ]);
+
+    res.json({ wallpapers, total, page, totalPages: Math.ceil(total / limit) });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error." });
+  }
+};
