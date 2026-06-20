@@ -72,6 +72,18 @@ npm run dev
 
 The API runs on port 3000 (configured in `.env`).
 
+### Backend Scripts
+
+| Script | Command | Description |
+|--------|---------|-------------|
+| `dev` | `npm run dev` | Starts server with nodemon + auto-generates swagger docs |
+| `pgen` | `npm run pgen` | Regenerates Prisma client from schema |
+| `mig` | `npm run mig -- <name>` | Creates a new Prisma migration |
+| `dbpull` | `npm run dbpull` | Pulls schema from existing database |
+| `dbpush` | `npm run dbpush` | Pushes Prisma schema to database |
+| `build` | `npm run build` | Bundles server with esbuild for production |
+| `build2` | `npm run build2` | Same as build but excludes `#prisma` alias |
+
 ### .env Setup
 
 Create `backend/.env`:
