@@ -25,7 +25,7 @@ export const wallpaperlike = async (req, res) => {
 
     res.json({ message: "Liked." });
   } catch (error) {
-    res.status(500).json({ error: "Internal server error." });
+    res.status(500).json({ error: "Internal server error.",message:error.message });
   }
 };
 
@@ -58,3 +58,45 @@ export const wallpaperunlike = async (req, res) => {
   }
 };
 
+export const checkuserlikedthewallpaperid = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { uiid } = req.user;
+
+    const existing = await prisma.wallpaperslikes.findUnique({
+      where: { useruid_wallpaper: { useruid: uiid, wallpaper: id } },
+    });
+
+    res.json({ liked: !!existing });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error." });
+  }
+};
+
+export const getmyalllikedwallpapers = async (req, res) => {
+  try {
+    const { uiid } = req.user;
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = 24;
+    const skip = (page - 1) * limit;
+
+    const [likes, total] = await Promise.all([
+      prisma.wallpaperslikes.findMany({
+        where: { useruid: uiid },
+        skip,
+        take: limit,
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.wallpaperslikes.count({ where: { useruid: uiid } }),
+    ]);
+
+    const wallpaperIds = likes.map((l) => l.wallpaper);
+    const wallpapers = await prisma.wallpapers.findMany({
+      where: { id: { in: wallpaperIds } },
+    });
+
+    res.json({ wallpapers, total, page, totalPages: Math.ceil(total / limit) });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error." });
+  }
+};

@@ -4,26 +4,29 @@ import { Download, Heart, Grid3X3, LayoutList, Settings, RefreshCw } from "lucid
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
+import Link from "next/link";
+import axios from "axios";
 import type { RootState } from "@/store/store";
-
-const wallpapers = [
-  { id: 9, title: "Signal Loss", aspect: "aspect-video", tag: "Cyberpunk", resolution: "5120 x 2880", downloads: "7.5K", likes: 567, alt: "Glitch art vertical bars", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuCzT4se0OxHJxE3JbuaFAghPM6YZWt2qCakAbowyTS5UXtPOKlXlUVpM1wRAeDtuTM2NQnG0u43U81rEmHTCeqsfOJRFI5YR65tzzJr4YZZJV-uad6MNy1vovs_ZutAkXHj3hGVg7bViortOhPp1GdnnXlwD5sUXFwDiq7tu4UvQkHYS2SCaBA7lztNGRVkbtFGYfiszkHWESuB22pfEDcgxy33aenGDo_gPwqT8Jpf90hOYHvlnrY8gj-IBVvRDZGnECgnVMj06fk" },
-  { id: 10, title: "Misty Pines", aspect: "aspect-square", tag: "Nature", resolution: "3840 x 2160", downloads: "6.9K", likes: 489, alt: "Dark forest in fog", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuAw9FADpxJv1azNzRU2C-jtZLYAZDEf-ukUD5xoF0ozE5rEPxx1BdJ5S4sas0DFEcPp27Ih328VwTMmTFX3CSch96P94BZYLoRoEue7MoXBnuuf9LfSkvrA6OD8LXAFT08qfi_wxC7iPvn0bMAduqqZxxQPkiK7W16baAx_HEMmkh9BcFK-H12ujJp5Bg5tJ2f60wcCb8zBy8l0nRHcmLPNQKZB2L2PI3glH_jBuqoZMv5PXZeriUm4xJxnvpnus1puzHHzb8PR4NQ" },
-  { id: 11, title: "Monolith Desk", aspect: "aspect-[4/3]", tag: "Industrial", resolution: "3840 x 2160", downloads: "5.4K", likes: 412, alt: "Minimalist workstation setup", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuAlzBwVLvXrSHK6p6Z9K0Uj5txoH-ZKAR0c2_PbK1eJz4Eml6o8OSx48k7sJh8T6Lo90wk_yYJi335tByimHJxyMvSulaCJHAZFsAZthKvsI0jm8cOXTvSVgICnjZ8UPqtY909ZcNEgCGS5hjibGuVWyMj-ojYexKYxG_Q9HyxCTmuV-y-VXGhdAPeksh-BsiMl0zBo2puHtHaf_fiANsXv4BsMpxblxa2i06QEnok-oFlx4MCVW9BR54w-F9mJ5NYpjQFiu5yi7vU" },
-  { id: 12, title: "Liquid Carbon", aspect: "aspect-square", tag: "Abstract", resolution: "7680 x 4320", downloads: "9.8K", likes: 876, alt: "Dark ripples in water", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuCuM_h3BvonvM3KJLmaNPPdLtiEk90CD_mGchLiyMmPQdxe3M9Zr4ZG1pDhr8FNoyCvZK1xa4igzzoyWa0VsotbCTjLYwSsX3HhMZJKxbYFyKIP2jM8BkzBOkCysK5WofWzoAJArN43bVqpXAaX6i9wjKnqnprDlmAIutov4RwLKQJsZ4ZRosW5PSzkz51LXFyqdcyXd0cBuySsG8yNCIf-G8IR0cLp46Q0ZgnwtUPz1Lh5bPyj49RqQ-dvA-R-aGTw7-scbA5rUeI" },
-  { id: 13, title: "Silent Space", aspect: "aspect-[3/4]", tag: "Minimalism", resolution: "3840 x 2160", downloads: "8.2K", likes: 645, alt: "Black chair in white hall", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuDSPQoraUQTHVGXdW1x7qGUAoVGDgKiT8mvDblj6bTS__ZZI7VNlOipH0T3lH3u6njGJHGXetEFbh-RZduc7gPmPpNIJPBo-YcqQrAA7_tNRCek25dbQm7HTJ6MDhFFjDV-6m5ZsNu-iD9xddBs52a4ICK-_wv5lfz_972S9Zv8NqNX07jYjHqWXcN4echSBhmh4zkNVxcAAu49uR9bGI6kn-HZjiEKXbFTj8lD_UIDPfo4iyh_nm3qCrCUrrPlcCHd1YL1Tvb3XKc" },
-  { id: 14, title: "Cyber Alley", aspect: "aspect-[9/16]", tag: "Cyberpunk", resolution: "2160 x 3840", downloads: "11.2K", likes: 934, alt: "Rainy neon alleyway", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuB7XpGeet1ghBQxGhCr4eghqIKMgtMfmmXtmxBJ2lmOimBut_fvLI84sCau8yACaprYvXZru2kLnRKv1KB2PRpISn1i7JQ0dmxtkJ1a8T3Pa2RlfXtn4IOgRgNPad-4DocQV2s3idGeo39q7evlVo4ES6LCoKK8oQq0Xly7Fp2bvQyQgcjfmQWuvJMXjtPgbE4Lkxd2skBA-usVEe209sU_EX2_LprbQOeeEdSpvl13vNrgm-0tlk4LnrPpR1ZCKxjjcOBT4x_PqRw" },
-];
 
 export default function ProfilePage() {
   const router = useRouter();
   const { loginstate, username, useremail } = useSelector((s: RootState) => s.user);
+  const [wallpapers, setWallpapers] = useState<any[]>([]);
+  const [wallpapersLoading, setWallpapersLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   useEffect(() => {
     if (!loginstate) router.push("/login");
   }, [loginstate, router]);
 
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  useEffect(() => {
+    if (!loginstate) return;
+    axios
+      .get("/api/wallpapers/my-likes", { withCredentials: true })
+      .then(({ data }) => setWallpapers(data.wallpapers))
+      .catch(() => {})
+      .finally(() => setWallpapersLoading(false));
+  }, [loginstate]);
 
   if (!loginstate) {
     return (
@@ -76,7 +79,9 @@ export default function ProfilePage() {
       {/* Stats Row */}
       <div className="grid grid-cols-2 gap-px bg-outline-variant mb-16 border border-outline-variant">
         <div className="bg-background py-6 px-8 flex flex-col items-center text-center">
-          <span className="font-display-lg text-headline-md tracking-tighter">{wallpapers.length}</span>
+          <span className="font-display-lg text-headline-md tracking-tighter">
+            {wallpapersLoading ? <RefreshCw className="w-5 h-5 animate-spin mx-auto" /> : wallpapers.length}
+          </span>
           <span className="font-meta-data text-meta-data text-secondary uppercase tracking-widest mt-1">Likes</span>
         </div>
         <div className="bg-background py-6 px-8 flex flex-col items-center text-center">
@@ -112,78 +117,75 @@ export default function ProfilePage() {
       </div>
 
       {/* Wallpaper Grid */}
-      {wallpapers.length > 0 ? (
+      {wallpapersLoading ? (
+        <section className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-gutter mb-16">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div key={i} className="animate-pulse">
+              <div className="bg-surface-container-high aspect-[4/5] rounded-none" />
+              <div className="mt-3 space-y-2">
+                <div className="h-3 bg-surface-container-high rounded w-2/3" />
+                <div className="h-2.5 bg-surface-container-high rounded w-1/2" />
+              </div>
+            </div>
+          ))}
+        </section>
+      ) : wallpapers.length > 0 ? (
         viewMode === "grid" ? (
-          <section className="masonry-grid mb-16">
-            {wallpapers.map((item) => (
-              <div
-                key={item.id}
-                className="masonry-item relative group overlay-target cursor-zoom-in"
-              >
-                <div
-                  className={`bg-surface-container ${item.aspect} overflow-hidden`}
-                >
+          <section className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-gutter mb-16 animate-fadeIn">
+            {wallpapers.map((item: any) => (
+              <Link key={item.id} href={`/allwallpapers/${item.id}`} className="relative group overlay-target cursor-pointer block">
+                <div className="bg-surface-container aspect-[4/5] overflow-hidden">
                   <img
-                    className="w-full h-full object-cover image-zoom"
-                    alt={item.alt}
-                    src={item.src}
+                    className="w-full h-full object-cover image-zoom transition-transform duration-500 group-hover:scale-105"
+                    alt={item.id}
+                    src={item.thumbs}
                   />
                 </div>
-                <div className="overlay-content absolute inset-0 bg-black/60 flex flex-col justify-end p-8">
-                  <div className="mb-4">
-                    <span className="font-label-sm text-label-sm text-white bg-white/10 px-2.5 py-1 backdrop-blur-sm">
-                      {item.tag}
+                <div className="overlay-content absolute inset-0 bg-black/60 flex flex-col justify-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="mb-2">
+                    <span className="font-label-sm text-label-sm text-white bg-white/10 px-2 py-0.5 backdrop-blur-sm">
+                      {item.category}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center text-white border-t border-white/20 pt-6">
-                    <span className="font-meta-data text-meta-data tracking-[0.15em] uppercase">
+                  <div className="flex justify-between items-center text-white border-t border-white/20 pt-3">
+                    <span className="font-meta-data text-meta-data tracking-[0.15em] uppercase truncate">
                       {item.resolution}
                     </span>
-                    <div className="flex gap-6">
-                      <Heart className="w-5 h-5 cursor-pointer hover:scale-110 transition-transform" />
-                      <Download className="w-5 h-5 cursor-pointer hover:scale-110 transition-transform" />
-                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </section>
         ) : (
           <div className="mb-16 divide-y divide-outline-variant border-t border-outline-variant">
-            {wallpapers.map((item) => (
-              <div
+            {wallpapers.map((item: any) => (
+              <Link
                 key={item.id}
+                href={`/allwallpapers/${item.id}`}
                 className="flex items-center gap-6 py-5 group hover:bg-surface-container transition-colors px-2 -mx-2"
               >
                 <div className="w-16 h-16 bg-surface-container overflow-hidden shrink-0">
                   <img
                     className="w-full h-full object-cover"
-                    alt={item.alt}
-                    src={item.src}
+                    alt={item.id}
+                    src={item.thumbs}
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-label-sm text-label-sm uppercase tracking-tight truncate">
-                    {item.title}
-                  </h3>
                   <p className="font-meta-data text-meta-data text-secondary mt-0.5">
-                    {item.resolution} &bull; {item.tag}
+                    {item.resolution} &bull; {item.category}
                   </p>
                 </div>
                 <div className="hidden sm:flex items-center gap-6 font-meta-data text-meta-data text-secondary shrink-0">
                   <span className="flex items-center gap-1">
-                    <Download className="w-3.5 h-3.5" />
-                    {item.downloads}
-                  </span>
-                  <span className="flex items-center gap-1">
                     <Heart className="w-3.5 h-3.5" />
-                    {item.likes}
+                    {item.likecount}
                   </span>
                 </div>
-                <button className="font-label-sm text-label-sm uppercase underline tracking-tighter text-secondary hover:text-primary transition-colors shrink-0">
-                  Download
-                </button>
-              </div>
+                <span className="font-label-sm text-label-sm uppercase underline tracking-tighter text-secondary hover:text-primary transition-colors shrink-0">
+                  View
+                </span>
+              </Link>
             ))}
           </div>
         )

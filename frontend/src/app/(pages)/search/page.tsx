@@ -134,7 +134,7 @@ function SearchContent() {
           {/* Results Grid */}
           <section className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-gutter mb-16">
             {wallpapers.map((item: any) => (
-              <Link key={item.id} href={`/allwallpapers/${item.id}`} className="relative group overlay-target cursor-zoom-in block">
+              <Link key={item.id} href={`/allwallpapers/${item.id}`} className="relative group overlay-target cursor-pointer block">
                 <div className="bg-surface-container aspect-[4/5] overflow-hidden">
                   <img
                     className="w-full h-full object-cover image-zoom transition-transform duration-500 group-hover:scale-105"

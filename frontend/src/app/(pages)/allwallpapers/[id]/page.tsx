@@ -3,15 +3,20 @@
 import { ArrowLeft, Heart, Download, RefreshCw } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import { APIROUTES } from "@/utils/APIROUTES";
 import { downloadImage } from "@/utils/download";
+import type { RootState } from "@/store/store";
 
 export default function WallpaperDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const { loginstate } = useSelector((s: RootState) => s.user);
   const [wallpaper, setWallpaper] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isliked, setIsliked] = useState(false);
+  const [likeLoading, setLikeLoading] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -24,6 +29,39 @@ export default function WallpaperDetailPage() {
       })
       .catch(() => setLoading(false));
   }, [id]);
+
+  useEffect(() => {
+    if (!loginstate || !id) return;
+    axios
+      .get(`/api/wallpapers/${id}/checklike`, { withCredentials: true })
+      .then(({ data }) => setIsliked(data.liked))
+      .catch(() => {});
+  }, [loginstate, id]);
+
+  const toggleLike = async () => {
+    if (!loginstate) {
+      router.push("/login");
+      return;
+    }
+    if (likeLoading) return;
+    setLikeLoading(true);
+
+    try {
+      if (isliked) {
+        await axios.post(`/api/wallpapers/${id}/unlike`, {}, { withCredentials: true });
+        setIsliked(false);
+        setWallpaper((prev: any) => prev ? { ...prev, likecount: prev.likecount - 1 } : prev);
+      } else {
+        await axios.post(`/api/wallpapers/${id}/like`, {}, { withCredentials: true });
+        setIsliked(true);
+        setWallpaper((prev: any) => prev ? { ...prev, likecount: prev.likecount + 1 } : prev);
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setLikeLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -97,6 +135,10 @@ export default function WallpaperDetailPage() {
                 value={`${wallpaper.dimension_x} x ${wallpaper.dimension_y} px`}
               />
               <InfoRow
+                label="Likes"
+                value={wallpaper.likecount.toString()}
+              />
+              <InfoRow
                 label="Created"
                 value={new Date(wallpaper.createdAt).toLocaleDateString()}
               />
@@ -111,8 +153,20 @@ export default function WallpaperDetailPage() {
                 <Download className="w-4 h-4" />
                 Download
               </button>
-              <button className="flex items-center justify-center gap-2 h-12 px-5 border border-outline-variant font-label-sm text-label-sm uppercase tracking-wider hover:border-primary transition-colors active:scale-[0.99]">
-                <Heart className="w-4 h-4" />
+              <button
+                onClick={toggleLike}
+                disabled={likeLoading}
+                className={`flex items-center justify-center gap-2 h-12 px-5 border font-label-sm text-label-sm uppercase tracking-wider transition-colors active:scale-[0.99] disabled:opacity-60 ${
+                  isliked
+                    ? "bg-primary text-on-primary border-primary"
+                    : "border-outline-variant hover:border-primary"
+                }`}
+              >
+                {likeLoading ? (
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Heart className={`w-4 h-4 ${isliked ? "fill-current" : ""}`} />
+                )}
               </button>
             </div>
           </div>
