@@ -92,6 +92,35 @@
         ]
       }
     },
+    "/userRoutes/logout": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "userRoutes"
+        ]
+      }
+    },
+    "/userRoutes/checkislogin": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "tags": [
+          "userRoutes"
+        ]
+      }
+    },
     "/api/wallpapers/": {
       "get": {
         "description": "",

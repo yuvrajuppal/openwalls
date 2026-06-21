@@ -1,20 +1,49 @@
 "use client";
 
-import { Eye, EyeOff, Mail, Lock } from "lucide-react";
-import { useState } from "react";
+import { Eye, EyeOff, Mail, Lock, RefreshCw } from "lucide-react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { login } from "@/store/slice/userSlice";
+import type { AppDispatch, RootState } from "@/store/store";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const { loginstate } = useSelector((s: RootState) => s.user);
+
+  useEffect(() => {
+    if (loginstate) router.push("/");
+  }, [loginstate, router]);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const { data } = await axios.post("/api/auth/login", { email, password }, { withCredentials: true });
+      dispatch(login({ username: data.user.username, email: data.user.email }));
+      router.push("/");
+    } catch (err: any) {
+      setError(err.response?.data?.error || "Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <main className="flex-1 flex items-center justify-center py-24 md:py-36 px-margin-mobile md:px-margin-desktop">
       <div className="w-full max-w-md">
-        {/* Header */}
         <div className="mb-12 border-l-4 border-primary pl-6">
           <span className="font-label-sm text-label-sm text-secondary uppercase tracking-[0.2em] mb-2 block">
             Welcome back
@@ -24,11 +53,7 @@ export default function LoginPage() {
           </h1>
         </div>
 
-        <form
-          className="flex flex-col gap-8"
-          onSubmit={(e) => e.preventDefault()}
-        >
-          {/* Email */}
+        <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
           <div className="relative group">
             <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
               <Mail
@@ -44,7 +69,9 @@ export default function LoginPage() {
               onFocus={() => setEmailFocused(true)}
               onBlur={() => setEmailFocused(false)}
               placeholder="Email address"
-              className={`w-full h-14 pl-14 pr-5 bg-transparent border-2 border-primary focus:ring-0 font-body-md text-base transition-all outline-none rounded-none ${
+              className={`w-full h-14 pl-14 pr-5 bg-transparent border-2 focus:ring-0 font-body-md text-base transition-all outline-none rounded-none ${
+                error ? "border-red-500" : "border-primary"
+              } ${
                 emailFocused
                   ? "shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
                   : "shadow-[4px_4px_0px_0px_rgba(0,0,0,0.05)]"
@@ -52,7 +79,6 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* Password */}
           <div className="relative group">
             <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
               <Lock
@@ -68,7 +94,9 @@ export default function LoginPage() {
               onFocus={() => setPasswordFocused(true)}
               onBlur={() => setPasswordFocused(false)}
               placeholder="Password"
-              className={`w-full h-14 pl-14 pr-14 bg-transparent border-2 border-primary focus:ring-0 font-body-md text-base transition-all outline-none rounded-none ${
+              className={`w-full h-14 pl-14 pr-14 bg-transparent border-2 focus:ring-0 font-body-md text-base transition-all outline-none rounded-none ${
+                error ? "border-red-500" : "border-primary"
+              } ${
                 passwordFocused
                   ? "shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
                   : "shadow-[4px_4px_0px_0px_rgba(0,0,0,0.05)]"
@@ -87,7 +115,10 @@ export default function LoginPage() {
             </button>
           </div>
 
-          {/* Forgot password */}
+          {error && (
+            <p className="font-label-sm text-label-sm text-red-500 -mt-4">{error}</p>
+          )}
+
           <div className="flex justify-end">
             <a
               href="#"
@@ -97,16 +128,16 @@ export default function LoginPage() {
             </a>
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
-            className="w-full h-14 bg-primary text-on-primary font-label-sm text-label-sm uppercase tracking-wider hover:bg-secondary transition-colors active:scale-[0.99]"
+            disabled={loading}
+            className="w-full h-14 bg-primary text-on-primary font-label-sm text-label-sm uppercase tracking-wider hover:bg-secondary transition-colors active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2"
           >
-            Sign In
+            {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : null}
+            {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
-        {/* Divider */}
         <div className="flex items-center gap-4 my-10">
           <div className="flex-1 h-px bg-outline-variant" />
           <span className="font-label-sm text-label-sm text-secondary uppercase tracking-[0.2em]">
@@ -115,7 +146,6 @@ export default function LoginPage() {
           <div className="flex-1 h-px bg-outline-variant" />
         </div>
 
-        {/* Sign up */}
         <p className="text-center font-body-md text-base text-secondary">
           Don&apos;t have an account?{" "}
           <Link

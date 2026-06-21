@@ -68,7 +68,20 @@ export default function AllWallpapersPage() {
       </section>
 
       {/* Grid */}
-      <section className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-gutter mb-16">
+      {wallpapers.length === 0 && loading ? (
+        <section className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-gutter mb-16">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div key={i} className="animate-pulse">
+              <div className="bg-surface-container-high aspect-[4/5] rounded-none" />
+              <div className="mt-3 space-y-2">
+                <div className="h-3 bg-surface-container-high rounded w-2/3" />
+                <div className="h-2.5 bg-surface-container-high rounded w-1/2" />
+              </div>
+            </div>
+          ))}
+        </section>
+      ) : (
+      <section className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-gutter mb-16 animate-fadeIn">
         {wallpapers.map((item: any) => (
           <Link key={item.id} href={`/allwallpapers/${item.id}`} className="relative group overlay-target cursor-zoom-in block">
             <div className="bg-surface-container aspect-[4/5] overflow-hidden">
@@ -104,6 +117,7 @@ export default function AllWallpapersPage() {
           </Link>
         ))}
       </section>
+      )}
 
       {/* Sentinel for infinite scroll */}
       <div ref={sentinelRef} className="flex justify-center py-12">

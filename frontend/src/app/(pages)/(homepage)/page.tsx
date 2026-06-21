@@ -46,11 +46,19 @@ export default function HomePage() {
       </div>
 
       {loading ? (
-        <section className="flex items-center justify-center py-32">
-          <RefreshCw className="w-8 h-8 animate-spin text-secondary" />
+        <section className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-gutter mb-32">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div key={i} className="animate-pulse">
+              <div className="bg-surface-container-high aspect-[4/5] rounded-none" />
+              <div className="mt-3 space-y-2">
+                <div className="h-3 bg-surface-container-high rounded w-2/3" />
+                <div className="h-2.5 bg-surface-container-high rounded w-1/2" />
+              </div>
+            </div>
+          ))}
         </section>
       ) : (
-        <section className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-gutter mb-32">
+        <section className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-gutter mb-32 animate-fadeIn">
           {wallpapers.map((item: any) => (
             <Link key={item.id} href={`/allwallpapers/${item.id}`} className="relative group overlay-target cursor-zoom-in block">
               <div className="bg-surface-container aspect-[4/5] overflow-hidden">

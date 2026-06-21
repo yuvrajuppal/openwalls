@@ -12,3 +12,12 @@ model wallpapers {
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
 }
+
+model wallpaperslikes {
+    id        String   @id @default(uuid())
+    useruid   String
+    wallpaper String
+    createdAt DateTime @default(now())
+
+    @@unique([useruid, wallpaper])
+}

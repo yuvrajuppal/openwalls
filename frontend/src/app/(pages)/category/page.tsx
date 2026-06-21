@@ -34,11 +34,13 @@ export default function CategoryPage() {
       </header>
 
       {loading ? (
-        <section className="flex items-center justify-center py-32">
-          <RefreshCw className="w-8 h-8 animate-spin text-secondary" />
-        </section>
-      ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="animate-pulse h-80 bg-surface-container-high" />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter animate-fadeIn">
           {categories.map((cat) => (
             <a
               key={cat.name}

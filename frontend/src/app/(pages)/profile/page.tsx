@@ -1,7 +1,10 @@
 "use client";
 
-import { Download, Heart, Grid3X3, LayoutList, Settings, MapPin, Calendar, Link as LinkIcon } from "lucide-react";
-import { useState } from "react";
+import { Download, Heart, Grid3X3, LayoutList, Settings, RefreshCw } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/store/store";
 
 const wallpapers = [
   { id: 9, title: "Signal Loss", aspect: "aspect-video", tag: "Cyberpunk", resolution: "5120 x 2880", downloads: "7.5K", likes: 567, alt: "Glitch art vertical bars", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuCzT4se0OxHJxE3JbuaFAghPM6YZWt2qCakAbowyTS5UXtPOKlXlUVpM1wRAeDtuTM2NQnG0u43U81rEmHTCeqsfOJRFI5YR65tzzJr4YZZJV-uad6MNy1vovs_ZutAkXHj3hGVg7bViortOhPp1GdnnXlwD5sUXFwDiq7tu4UvQkHYS2SCaBA7lztNGRVkbtFGYfiszkHWESuB22pfEDcgxy33aenGDo_gPwqT8Jpf90hOYHvlnrY8gj-IBVvRDZGnECgnVMj06fk" },
@@ -13,13 +16,24 @@ const wallpapers = [
 ];
 
 export default function ProfilePage() {
+  const router = useRouter();
+  const { loginstate, username, useremail } = useSelector((s: RootState) => s.user);
+
+  useEffect(() => {
+    if (!loginstate) router.push("/login");
+  }, [loginstate, router]);
+
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const stats = [
-    { label: "Likes", value: wallpapers.length.toString() },
-    { label: "Total Downloads", value: "49.7K" },
-    { label: "Joined", value: "2024" },
-  ];
+  if (!loginstate) {
+    return (
+      <main className="flex items-center justify-center min-h-[70vh]">
+        <RefreshCw className="w-8 h-8 animate-spin text-secondary" />
+      </main>
+    );
+  }
+
+  const initials = username.slice(0, 2).toUpperCase();
 
   return (
     <main className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12 w-full">
@@ -28,7 +42,7 @@ export default function ProfilePage() {
         <div className="shrink-0">
           <div className="w-28 h-28 md:w-36 md:h-36 bg-surface-container border-2 border-primary flex items-center justify-center overflow-hidden">
             <span className="font-display-lg text-display-lg-mobile md:text-display-lg text-primary select-none">
-              YD
+              {initials}
             </span>
           </div>
         </div>
@@ -37,10 +51,10 @@ export default function ProfilePage() {
           <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 mb-6">
             <div>
               <h1 className="font-display-lg text-display-lg-mobile md:text-display-lg tracking-tighter uppercase">
-                Yuvraj Dhamija
+                {username}
               </h1>
               <p className="font-meta-data text-meta-data text-secondary uppercase tracking-widest mt-1">
-                @yuvrajuppal
+                @{username}
               </p>
             </div>
             <div className="flex gap-3">
@@ -55,44 +69,20 @@ export default function ProfilePage() {
 
           <p className="font-body-md text-body-lg text-secondary max-w-2xl mb-6 leading-relaxed">
             Curating the finest monochrome and minimalist wallpapers.
-            Architecture enthusiast and digital artist exploring the
-            intersection of geometry and light.
           </p>
-
-          <div className="flex flex-wrap gap-x-8 gap-y-2 font-meta-data text-meta-data text-secondary">
-            <span className="flex items-center gap-2">
-              <MapPin className="w-3.5 h-3.5" />
-              India
-            </span>
-            <span className="flex items-center gap-2">
-              <Calendar className="w-3.5 h-3.5" />
-              Joined 2024
-            </span>
-            <span className="flex items-center gap-2">
-              <LinkIcon className="w-3.5 h-3.5" />
-              <a href="#" className="underline underline-offset-2 hover:text-primary transition-colors">
-                openwalls.app/yuvrajuppal
-              </a>
-            </span>
-          </div>
         </div>
       </section>
 
       {/* Stats Row */}
-      <div className="grid grid-cols-3 gap-px bg-outline-variant mb-16 border border-outline-variant">
-        {stats.map((stat) => (
-          <div
-            key={stat.label}
-            className="bg-background py-6 px-8 flex flex-col items-center text-center"
-          >
-            <span className="font-display-lg text-headline-md tracking-tighter">
-              {stat.value}
-            </span>
-            <span className="font-meta-data text-meta-data text-secondary uppercase tracking-widest mt-1">
-              {stat.label}
-            </span>
-          </div>
-        ))}
+      <div className="grid grid-cols-2 gap-px bg-outline-variant mb-16 border border-outline-variant">
+        <div className="bg-background py-6 px-8 flex flex-col items-center text-center">
+          <span className="font-display-lg text-headline-md tracking-tighter">{wallpapers.length}</span>
+          <span className="font-meta-data text-meta-data text-secondary uppercase tracking-widest mt-1">Likes</span>
+        </div>
+        <div className="bg-background py-6 px-8 flex flex-col items-center text-center">
+          <span className="font-display-lg text-headline-md tracking-tighter">{useremail}</span>
+          <span className="font-meta-data text-meta-data text-secondary uppercase tracking-widest mt-1">Email</span>
+        </div>
       </div>
 
       {/* Section Header & View Toggle */}
