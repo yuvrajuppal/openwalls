@@ -6,23 +6,26 @@ OpenWalls is a wallpaper discovery and curation platform focused on high-resolut
 
 ## Tech Stack
 
-- **Frontend:** Next.js 16, React 19, Tailwind CSS v4, Framer Motion, Lucide React
-- **Backend:** Node.js, Express 5, Prisma 7 (MySQL/MariaDB)
+- **Frontend:** Next.js 16, React 19, Tailwind CSS v4, Redux Toolkit, Axios, Lucide React
+- **Backend:** Node.js, Express 5, Prisma 7 (MySQL/MariaDB), JWT, bcryptjs
 - **Design:** Monochrome Material 3-inspired palette, Geist / Inter / JetBrains Mono typography
 - **Data:** Wallhaven API
 
 ## Features
 
 - Minimalist, content-first gallery experience
-- Responsive masonry grid layout with hover overlays
-- Category-based browsing (Minimalism, Cyberpunk, Landscape, etc.)
-- Search and filter by themes, colors, and tags
-- Brutalist-styled login and signup pages (with JWT auth)
-- Sticky navigation bar with active route highlighting
-- Footer with legal and social links
+- Responsive masonry grid layout with hover overlays + skeleton loading
+- Full authentication system (JWT + httpOnly cookies + Redux state)
+- Like/unlike wallpapers with persistent storage
+- Brutalist-styled auth pages with real-time validation
+- Search with API-backed results and infinite scroll
 - Random wallpaper endpoint (24 random picks per call)
-- Paginated wallpaper listing API
+- Paginated + scrollable wallpaper listing
 - Category aggregation endpoint
+- Skeleton loading screens + smooth fade-in animations
+- Route-based scroll-to-top
+- Next.js API route handlers (backend URL hidden from client)
+- Image download utility
 
 ## Pages
 
@@ -33,22 +36,36 @@ OpenWalls is a wallpaper discovery and curation platform focused on high-resolut
 | Login | `/login` | Complete |
 | Sign Up | `/signup` | Complete |
 | Search | `/search` | Complete |
-| Toplist | `/toplist` | Complete |
+| All Wallpapers | `/allwallpapers` | Complete |
+| Wallpaper Detail | `/allwallpapers/[id]` | Complete |
 | Profile | `/profile` | Complete |
 
 ## API Endpoints
 
+### Auth
 | Method | Route | Description |
 |--------|-------|-------------|
 | POST | `/userRoutes/signup` | Register a new user |
-| POST | `/userRoutes/login` | Sign in and receive JWT |
-| GET | `/api/wallpapers?page=1` | Paginated wallpaper list (24 per page) |
+| POST | `/userRoutes/login` | Sign in (sets httpOnly cookie) |
+| POST | `/userRoutes/logout` | Clear auth cookie |
+| GET | `/userRoutes/checkislogin` | Check session via cookie |
+
+### Wallpapers
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | `/api/wallpapers?page=1` | Paginated list (24 per page) |
 | GET | `/api/wallpapers/random` | 24 random wallpapers |
 | GET | `/api/wallpapers/categories` | Category list with counts |
+| GET | `/api/wallpapers/search?q=term` | Search by id, category, resolution |
+| GET | `/api/wallpapers/:id` | Single wallpaper detail |
+| POST | `/api/wallpapers/:id/like` | Like a wallpaper (auth required) |
+| POST | `/api/wallpapers/:id/unlike` | Unlike a wallpaper (auth required) |
+
+All frontend calls go through Next.js API route handlers — backend URL is never exposed to the client.
 
 ## Status
 
-**Under development.** Frontend is complete with 7 pages. Backend has auth and wallpaper APIs with Prisma ORM connected to MySQL/MariaDB.
+**Active development.** All core features implemented — auth, wallpaper browsing, search, likes, and user profiles.
 
 ## Getting Started
 
@@ -60,7 +77,7 @@ npm install
 npm run dev
 ```
 
-Opens at [http://localhost:3000](http://localhost:3000).
+Opens at [http://localhost:3001](http://localhost:3001).
 
 ### Backend
 
@@ -70,19 +87,18 @@ npm install
 npm run dev
 ```
 
-The API runs on port 3000 (configured in `.env`).
+API runs on port 3000.
 
 ### Backend Scripts
 
 | Script | Command | Description |
 |--------|---------|-------------|
-| `dev` | `npm run dev` | Starts server with nodemon + auto-generates swagger docs |
-| `pgen` | `npm run pgen` | Regenerates Prisma client from schema |
+| `dev` | `npm run dev` | Starts with nodemon + swagger auto-gen |
+| `pgen` | `npm run pgen` | Regenerates Prisma client |
 | `mig` | `npm run mig -- <name>` | Creates a new Prisma migration |
 | `dbpull` | `npm run dbpull` | Pulls schema from existing database |
 | `dbpush` | `npm run dbpush` | Pushes Prisma schema to database |
-| `build` | `npm run build` | Bundles server with esbuild for production |
-| `build2` | `npm run build2` | Same as build but excludes `#prisma` alias |
+| `build` | `npm run build` | Bundles server with esbuild |
 
 ### .env Setup
 
@@ -111,27 +127,32 @@ openwalls/
 │   └── src/
 │       ├── app/
 │       │   ├── (pages)/
-│       │   │   ├── (homepage)/   # Home page with masonry grid
-│       │   │   ├── category/     # Category listing
-│       │   │   ├── login/        # Sign in page
-│       │   │   ├── signup/       # Create account page
-│       │   │   ├── search/       # Search results
-│       │   │   ├── toplist/      # Top ranked wallpapers
-│       │   │   └── profile/      # User profile with liked wallpapers
-│       │   ├── globals.css       # Theme tokens and utilities
-│       │   └── layout.tsx        # Root layout
-│       ├── components/           # Navbar, Footer
-│       └── utils/                # Helpers
+│       │   │   ├── (homepage)/   # Home with random wallpaper grid
+│       │   │   ├── category/     # Category listing from API
+│       │   │   ├── login/        # Sign in with Redux dispatch
+│       │   │   ├── signup/       # Create account with Redux dispatch
+│       │   │   ├── search/       # API-backed search results
+│       │   │   ├── allwallpapers/# Full listing with infinite scroll
+│       │   │   ├── allwallpapers/[id]/  # Wallpaper detail page
+│       │   │   └── profile/      # User profile (auth guarded)
+│       │   ├── api/
+│       │   │   ├── auth/         # Route handlers (login, signup, logout, check)
+│       │   │   └── wallpapers/   # Route handler proxy (catch-all)
+│       │   ├── globals.css       # Theme tokens + utilities
+│       │   └── layout.tsx        # Root layout with Redux provider
+│       ├── components/           # Navbar, Footer, LoadingScreen, ScrollToTop
+│       ├── store/                # Redux store, provider, user slice, AuthInitializer
+│       └── utils/                # APIROUTES, download, baseurl, production
 ├── backend/           # Express API server
 │   ├── prisma/
-│   │   └── schema/               # Prisma schema files (users, wallpapers)
+│   │   └── schema/               # users, wallpapers, wallpaperslikes
 │   ├── generated/prisma/         # Generated Prisma client
 │   └── src/
-│       ├── config/               # DB config (Prisma client)
-│       ├── controller/           # Route handlers (auth, wallpapers)
+│       ├── config/               # Prisma client + MariaDB adapter
+│       ├── middleware/           # JWT authentication middleware
+│       ├── controller/           # Auth, wallpapers, likes controllers
 │       ├── routes/               # Express route definitions
-│       ├── app.js                # Express app setup
+│       ├── app.js                # Express app setup + CORS
 │       └── server.js             # Entry point
 ├── data.js            # Wallhaven API data ingestion script
-└── html/              # Static HTML prototypes
 ```
