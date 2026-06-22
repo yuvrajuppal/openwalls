@@ -3,7 +3,7 @@ import { prisma } from "../config/dbconfig.js";
 
 export const authenticate = async (req, res, next) => {
   try {
-    const token = req.cookies?.openwalls_userlogin_token;
+    const token = req.cookies?.openwalls_userlogin_token || req.headers.authorization?.replace("Bearer ", "");
     if (!token) {
       return res.status(401).json({ error: "Unauthorized." });
     }
