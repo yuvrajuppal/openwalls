@@ -1,12 +1,15 @@
 "use client";
 
 import { Search, LogOut, User } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { logout } from "@/store/slice/userSlice";
 import type { RootState, AppDispatch } from "@/store/store";
+import applogo from "@/assets/applogo.png";
 
 const navLinks = [
   { label: "HOME", href: "/" },
@@ -30,8 +33,8 @@ export default function Navbar() {
     <nav className="w-full top-0 sticky z-50 bg-background/95 backdrop-blur-sm border-b border-outline-variant">
       <div className="flex justify-between items-center max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop h-20">
         <div className="flex items-center gap-12">
-          <Link href="/" className="font-display-lg text-headline-md tracking-tighter text-primary select-none cursor-default">
-            OpenWalls
+          <Link href="/">
+            <Image src={applogo} alt="OpenWalls" height={28} className="object-contain" priority />
           </Link>
           <div className="hidden md:flex gap-10">
             {navLinks.map((link) => {
@@ -53,6 +56,7 @@ export default function Navbar() {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          <ThemeToggle />
           <Link href="/search"><Search className="text-primary cursor-pointer active:opacity-70 w-[22px] h-[22px]" /></Link>
           {loginstate ? (
             <>

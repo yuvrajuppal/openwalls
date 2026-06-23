@@ -119,15 +119,6 @@ export default function LoginPage() {
             <p className="font-label-sm text-label-sm text-red-500 -mt-4">{error}</p>
           )}
 
-          <div className="flex justify-end">
-            <a
-              href="#"
-              className="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors uppercase tracking-wider"
-            >
-              Forgot password?
-            </a>
-          </div>
-
           <button
             type="submit"
             disabled={loading}

@@ -1,10 +1,13 @@
+import Image from "next/image";
+import applogo from "@/assets/applogo.png";
+
 export default function Footer() {
   return (
-    <footer className="w-full bg-white border-t border-outline-variant py-16 mt-auto">
+    <footer className="w-full bg-background border-t border-outline-variant py-16 mt-auto">
       <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
         <div className="flex flex-col md:flex-row justify-between items-center gap-12">
           <div className="flex flex-col gap-4 items-center md:items-start">
-            <span className="font-display-lg text-headline-md text-primary tracking-tighter uppercase select-none">OpenWalls</span>
+            <Image src={applogo} alt="OpenWalls" height={24} className="object-contain" />
             <p className="font-label-sm text-meta-data uppercase tracking-[0.15em] text-secondary">
               &copy; 2024 OpenWalls. Built for the high-res community.
             </p>

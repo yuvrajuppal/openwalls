@@ -3,7 +3,9 @@
 import { ArrowLeft, Heart, Download, RefreshCw } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import axios from "axios";
 import { APIROUTES } from "@/utils/APIROUTES";
 import { downloadImage } from "@/utils/download";
@@ -40,7 +42,16 @@ export default function WallpaperDetailPage() {
 
   const toggleLike = async () => {
     if (!loginstate) {
-      router.push("/login");
+      toast.error(
+        <div>
+          Please{" "}
+          <Link href="/login" className="underline font-bold text-white">
+            sign in
+          </Link>{" "}
+          to like wallpapers
+        </div>,
+        { autoClose: 3000 }
+      );
       return;
     }
     if (likeLoading) return;

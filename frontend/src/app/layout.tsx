@@ -1,16 +1,24 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { prodmode } from "@/utils/production";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import ScrollToTop from "@/components/ScrollToTop";
 import LoadingScreen from "@/components/LoadingScreen";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { StoreProvider } from "@/store/provider";
 import AuthInitializer from "@/store/AuthInitializer";
 
 import "./globals.css";
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: "OpenWalls | High-Resolution Minimalist Wallpapers",
   description: "Curated, high-resolution minimalist wallpapers for the modern interface.",
+  icons: { icon: "/applogo.png" },
 };
 
 export default function RootLayout({
@@ -19,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="en" suppressHydrationWarning className={cn("h-full antialiased", "font-sans", geist.variable)}>
       <head>
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&family=Geist:wght@600;700&display=swap"
@@ -28,6 +36,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-background text-on-background font-body-md selection:bg-primary selection:text-on-primary">
         <StoreProvider>
+        <ThemeProvider>
         <Suspense><ScrollToTop /></Suspense>
         <AuthInitializer />
         <LoadingScreen>
@@ -42,8 +51,10 @@ export default function RootLayout({
             </div>
           </div>
         )}
+        <ToastContainer position="bottom-center" theme="dark" />
         {children}
         </LoadingScreen>
+        </ThemeProvider>
         </StoreProvider>
       </body>
     </html>
