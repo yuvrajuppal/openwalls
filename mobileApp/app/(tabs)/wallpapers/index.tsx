@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import { RefreshCw } from "lucide-react-native";
 import { router } from "expo-router";
-import { useToast } from "react-native-toast-notifications";
+import { useToastNotification } from "../../../utils/toast";
 import { wallpaperService } from "../../../services/wallpaper.service";
 import { Wallpaper } from "../../../utils/types";
 
@@ -12,7 +12,7 @@ export default function WallpapersScreen() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const toast = useToast();
+  const showToast = useToastNotification();
 
   useEffect(() => {
     fetchWallpapers(1);
@@ -25,7 +25,7 @@ export default function WallpapersScreen() {
       setTotalPages(data.totalPages);
       setPage(pageNum);
     } catch (error) {
-      toast.show("Failed to load wallpapers", { type: "danger" });
+      showToast("Failed to load wallpapers", { type: "danger" });
     } finally {
       setLoading(false);
     }
@@ -39,7 +39,7 @@ export default function WallpapersScreen() {
       setWallpapers([...wallpapers, ...data.wallpapers]);
       setPage(page + 1);
     } catch (error) {
-      toast.show("Failed to load more wallpapers", { type: "danger" });
+      showToast("Failed to load more wallpapers", { type: "danger" });
     } finally {
       setLoadingMore(false);
     }

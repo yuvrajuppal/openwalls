@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import { Mail, Lock, Eye, EyeOff, RefreshCw } from "lucide-react-native";
 import { router } from "expo-router";
-import { useToast } from "react-native-toast-notifications";
+import { useToastNotification } from "../../utils/toast";
 import { useUser } from "../../context/UserContext";
 
 export default function LoginScreen() {
@@ -12,7 +12,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const toast = useToast();
+  const showToast = useToastNotification();
 
   const handleSubmit = async () => {
     setError("");
@@ -23,12 +23,12 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       await login(email, password);
-      toast.show("Logged in successfully", { type: "success" });
+      showToast("Logged in successfully", { type: "success" });
       router.back();
     } catch (err: any) {
       const message = err.response?.data?.error || "Login failed. Please try again.";
       setError(message);
-      toast.show(message, { type: "danger" });
+      showToast(message, { type: "danger" });
     } finally {
       setLoading(false);
     }

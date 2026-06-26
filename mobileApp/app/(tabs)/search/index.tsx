@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView, TextInput, ActivityIndicator } from "react-native";
 import { Search, SearchX, RefreshCw, ArrowDown, Heart, Download } from "lucide-react-native";
 import { router } from "expo-router";
-import { useToast } from "react-native-toast-notifications";
+import { useToastNotification } from "../../../utils/toast";
 import { wallpaperService } from "../../../services/wallpaper.service";
 import { Wallpaper } from "../../../utils/types";
 
@@ -16,7 +16,7 @@ export default function SearchScreen() {
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
   const [hasSearched, setHasSearched] = useState(false);
-  const toast = useToast();
+  const showToast = useToastNotification();
 
   const handleSearch = useCallback(async () => {
     const trimmed = searchInput.trim();
@@ -36,12 +36,12 @@ export default function SearchScreen() {
       setTotalPages(data.totalPages);
       setPage(1);
     } catch (error) {
-      toast.show("Search failed", { type: "danger" });
+      showToast("Search failed", { type: "danger" });
       setWallpapers([]);
     } finally {
       setLoading(false);
     }
-  }, [searchInput, toast]);
+  }, [searchInput, showToast]);
 
   const handleLoadMore = async () => {
     if (loadingMore || page >= totalPages) return;
@@ -51,7 +51,7 @@ export default function SearchScreen() {
       setWallpapers([...wallpapers, ...data.wallpapers]);
       setPage(page + 1);
     } catch (error) {
-      toast.show("Failed to load more", { type: "danger" });
+      showToast("Failed to load more", { type: "danger" });
     } finally {
       setLoadingMore(false);
     }

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import { RefreshCw } from "lucide-react-native";
 import { router } from "expo-router";
-import { useToast } from "react-native-toast-notifications";
+import { useToastNotification } from "../../../utils/toast";
 import { wallpaperService } from "../../../services/wallpaper.service";
 import { Category } from "../../../utils/types";
 
@@ -14,7 +14,7 @@ const CATEGORY_IMAGES: Record<string, string> = {
 export default function CategoryScreen() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const toast = useToast();
+  const showToast = useToastNotification();
 
   useEffect(() => {
     fetchCategories();
@@ -25,7 +25,7 @@ export default function CategoryScreen() {
       const data = await wallpaperService.getCategories();
       setCategories(data);
     } catch (error) {
-      toast.show("Failed to load categories", { type: "danger" });
+      showToast("Failed to load categories", { type: "danger" });
     } finally {
       setLoading(false);
     }

@@ -2,14 +2,14 @@ import { useState, useCallback, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import { RefreshCw } from "lucide-react-native";
 import { router } from "expo-router";
-import { useToast } from "react-native-toast-notifications";
+import { useToastNotification } from "../../utils/toast";
 import { wallpaperService } from "../../services/wallpaper.service";
 import { Wallpaper } from "../../utils/types";
 
 export default function HomeScreen() {
   const [wallpapers, setWallpapers] = useState<Wallpaper[]>([]);
   const [loading, setLoading] = useState(true);
-  const toast = useToast();
+  const showToast = useToastNotification();
 
   const fetchRandom = useCallback(async () => {
     setLoading(true);
@@ -17,12 +17,12 @@ export default function HomeScreen() {
       const data = await wallpaperService.getRandom();
       setWallpapers(data);
     } catch (error) {
-      toast.show("Failed to load wallpapers", { type: "danger" });
+      showToast("Failed to load wallpapers", { type: "danger" });
       setWallpapers([]);
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  }, [showToast]);
 
   useEffect(() => {
     fetchRandom();

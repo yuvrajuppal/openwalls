@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
-import { View, Text, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
+import { View, Text, Image, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { ArrowLeft, Heart, Download, RefreshCw } from "lucide-react-native";
 import { router, useLocalSearchParams } from "expo-router";
-import { useToast } from "react-native-toast-notifications";
+import { Paths, File } from "expo-file-system";
+import * as MediaLibrary from "expo-media-library";
+import { useToastNotification } from "../../utils/toast";
 import { useUser } from "../../context/UserContext";
 import { wallpaperService } from "../../services/wallpaper.service";
 import { likeService } from "../../services/like.service";
@@ -30,7 +32,9 @@ export default function WallpaperDetailScreen() {
   const [loading, setLoading] = useState(true);
   const [isliked, setIsliked] = useState(false);
   const [likeLoading, setLikeLoading] = useState(false);
-  const toast = useToast();
+  const [downloading, setDownloading] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
+  const showToast = useToastNotification();
 
   useEffect(() => {
     if (id) {
@@ -44,13 +48,30 @@ export default function WallpaperDetailScreen() {
     }
   }, [isLoggedIn, id]);
 
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval> | null = null;
+    if (downloading) {
+      interval = setInterval(() => {
+        setDownloadProgress((prev) => {
+          if (prev >= 90) return prev;
+          return prev + 10;
+        });
+      }, 300);
+    } else {
+      setDownloadProgress(0);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [downloading]);
+
   const fetchWallpaper = async () => {
     setLoading(true);
     try {
       const data = await wallpaperService.getById(id!);
       setWallpaper(data);
     } catch (error) {
-      toast.show("Failed to load wallpaper", { type: "danger" });
+      showToast("Failed to load wallpaper", { type: "danger" });
     } finally {
       setLoading(false);
     }
@@ -67,7 +88,7 @@ export default function WallpaperDetailScreen() {
 
   const toggleLike = async () => {
     if (!isLoggedIn) {
-      toast.show("Please sign in to like wallpapers", { type: "warning" });
+      showToast("Please sign in to like wallpapers", { type: "warning" });
       return;
     }
     if (likeLoading) return;
@@ -79,19 +100,54 @@ export default function WallpaperDetailScreen() {
         if (wallpaper) {
           setWallpaper({ ...wallpaper, likecount: wallpaper.likecount - 1 });
         }
-        toast.show("Unliked", { type: "success" });
+        showToast("Unliked", { type: "success" });
       } else {
         await likeService.like(id!);
         setIsliked(true);
         if (wallpaper) {
           setWallpaper({ ...wallpaper, likecount: wallpaper.likecount + 1 });
         }
-        toast.show("Liked!", { type: "success" });
+        showToast("Liked!", { type: "success" });
       }
     } catch (error) {
-      toast.show("Failed to update like", { type: "danger" });
+      showToast("Failed to update like", { type: "danger" });
     } finally {
       setLikeLoading(false);
+    }
+  };
+
+  const downloadWallpaper = async () => {
+    if (!wallpaper || downloading) return;
+    
+    try {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission Required",
+          "Please allow access to your media library to download wallpapers.",
+          [{ text: "OK" }]
+        );
+        return;
+      }
+
+      setDownloading(true);
+      setDownloadProgress(0);
+      
+      const extension = wallpaper.file_type.split("/")[1] || "jpg";
+      const filename = `wallpaper-${wallpaper.id}.${extension}`;
+      const file = new File(Paths.cache, filename);
+      
+      const downloadedFile = await File.downloadFileAsync(wallpaper.imagelink, file);
+      
+      setDownloadProgress(100);
+      await MediaLibrary.createAssetAsync(downloadedFile.uri);
+      showToast("Wallpaper downloaded successfully!", { type: "success" });
+    } catch (error) {
+      console.error("Download error:", error);
+      showToast("Failed to download wallpaper", { type: "danger" });
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -148,9 +204,19 @@ export default function WallpaperDetailScreen() {
             </View>
 
             <View className="px-6 py-5 flex-row gap-4">
-              <TouchableOpacity className="flex-1 flex-row items-center justify-center gap-2 h-12 bg-white active:opacity-80">
-                <Download size={16} color="black" />
-                <Text className="text-sm font-semibold text-black uppercase tracking-wider">Download</Text>
+              <TouchableOpacity
+                onPress={downloadWallpaper}
+                disabled={downloading}
+                className="flex-1 flex-row items-center justify-center gap-2 h-12 bg-white active:opacity-80"
+              >
+                {downloading ? (
+                  <RefreshCw size={16} color="black" />
+                ) : (
+                  <Download size={16} color="black" />
+                )}
+                <Text className="text-sm font-semibold text-black uppercase tracking-wider">
+                  {downloading ? `${downloadProgress}%` : "Download"}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={toggleLike}
@@ -166,6 +232,17 @@ export default function WallpaperDetailScreen() {
                 )}
               </TouchableOpacity>
             </View>
+            
+            {downloading && (
+              <View className="px-6 pb-5">
+                <View className="h-1 bg-neutral-800 rounded-full overflow-hidden">
+                  <View 
+                    className="h-full bg-white rounded-full"
+                    style={{ width: `${downloadProgress}%` }}
+                  />
+                </View>
+              </View>
+            )}
           </View>
         </View>
       </View>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from "react-native";
 import { Heart, Grid3X3, LayoutList, Settings, LogOut } from "lucide-react-native";
 import { router } from "expo-router";
-import { useToast } from "react-native-toast-notifications";
+import { useToastNotification } from "../../../utils/toast";
 import { useUser } from "../../../context/UserContext";
 import { likeService } from "../../../services/like.service";
 import { Wallpaper } from "../../../utils/types";
@@ -12,7 +12,7 @@ export default function ProfileScreen() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [wallpapers, setWallpapers] = useState<Wallpaper[]>([]);
   const [loading, setLoading] = useState(true);
-  const toast = useToast();
+  const showToast = useToastNotification();
 
   const handleLogout = async () => {
     Alert.alert("Logout", "Are you sure you want to logout?", [
@@ -23,9 +23,9 @@ export default function ProfileScreen() {
         onPress: async () => {
           try {
             await logout();
-            toast.show("Logged out successfully", { type: "success" });
+            showToast("Logged out successfully", { type: "success" });
           } catch (error) {
-            toast.show("Failed to logout", { type: "danger" });
+            showToast("Failed to logout", { type: "danger" });
           }
         },
       },
@@ -46,7 +46,7 @@ export default function ProfileScreen() {
       const data = await likeService.getMyLikes(1);
       setWallpapers(data.wallpapers);
     } catch (error) {
-      toast.show("Failed to load liked wallpapers", { type: "danger" });
+      showToast("Failed to load liked wallpapers", { type: "danger" });
     } finally {
       setLoading(false);
     }
