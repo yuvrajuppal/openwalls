@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import App from './App'
 
 const Main = () => {
   return (
-    <View>
-      <Text>Main</Text>
-    </View>
+    <>
+    <App/>
+    </>
   )
 }
 

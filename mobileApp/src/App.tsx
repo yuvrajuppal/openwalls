@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import StackNav from './navcomponents/StackNav'
 
 const App = () => {
   return (
-    <View>
-      <Text>App</Text>
-    </View>
+  <>
+  <StackNav/>
+  </>
   )
 }
 
