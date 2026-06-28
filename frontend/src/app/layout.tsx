@@ -16,9 +16,30 @@ import { cn } from "@/lib/utils";
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
-  title: "OpenWalls | High-Resolution Minimalist Wallpapers",
+  metadataBase: new URL("https://openwalls.app"),
+  title: {
+    default: "OpenWalls | High-Resolution Minimalist Wallpapers",
+    template: "%s | OpenWalls",
+  },
   description: "Curated, high-resolution minimalist wallpapers for the modern interface.",
-  icons: { icon: "/applogo.png" },
+  icons: { icon: "/applogo.png", apple: "/applogo.png" },
+  openGraph: {
+    title: "OpenWalls",
+    description: "Curated, high-resolution minimalist wallpapers for the modern interface.",
+    url: "https://openwalls.app",
+    siteName: "OpenWalls",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "OpenWalls",
+    description: "Curated, high-resolution minimalist wallpapers for the modern interface.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -29,6 +50,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={cn("h-full antialiased", "font-sans", geist.variable)}>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&family=Geist:wght@600;700&display=swap"
           rel="stylesheet"

@@ -1,1 +1,1 @@
-export const BASEURL = "http://localhost:3000";
+export const BASEURL = "https://api.openwalls.goosecodes.com";

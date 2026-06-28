@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import axios from "axios";
@@ -33,15 +33,15 @@ export default function HomePage() {
         <div>
           <span className="font-label-sm text-label-sm text-secondary uppercase tracking-[0.2em] mb-2 block">Discover</span>
           <div className="flex items-center gap-3">
-            <h3 className="font-display-lg text-headline-md tracking-tighter uppercase">Random Wallpapers</h3>
+            <h1 className="font-display-lg text-headline-md tracking-tighter uppercase">Random Wallpapers</h1>
             <button onClick={fetchRandom} className="p-2 border border-outline-variant hover:border-primary transition-colors active:scale-95">
               <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
             </button>
           </div>
         </div>
-        <a className="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors flex items-center gap-2 group" href="/toplist">
-          View All <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-        </a>
+        <Link className="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors flex items-center gap-2 group" href="/allwallpapers">
+          View All <span className="inline-block transition-transform group-hover:translate-x-1">&rarr;</span>
+        </Link>
       </div>
 
       {loading ? (
@@ -61,7 +61,7 @@ export default function HomePage() {
           {wallpapers.map((item: any) => (
             <Link key={item.id} href={`/allwallpapers/${item.id}`} className="relative group overlay-target cursor-pointer block">
               <div className="bg-surface-container aspect-[4/5] overflow-hidden">
-                <img className="w-full h-full object-cover image-zoom" alt={item.id} src={item.thumbs} />
+                <img className="w-full h-full object-cover image-zoom" alt={`${item.category} wallpaper ${item.resolution}`} src={item.thumbs} />
               </div>
               <div className="overlay-content absolute inset-0 bg-black/60 flex flex-col justify-end p-8">
                 <div className="mb-4">

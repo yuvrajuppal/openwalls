@@ -158,7 +158,7 @@ export default function ProfilePage() {
                   <div className="bg-surface-container aspect-[4/5] overflow-hidden">
                     <img
                       className="w-full h-full object-cover image-zoom transition-transform duration-500 group-hover:scale-105"
-                      alt={item.id}
+                      alt={`${item.category} wallpaper ${item.resolution}`}
                       src={item.thumbs}
                     />
                   </div>
@@ -188,7 +188,7 @@ export default function ProfilePage() {
                   <div className="w-16 h-16 bg-surface-container overflow-hidden shrink-0">
                     <img
                       className="w-full h-full object-cover"
-                      alt={item.id}
+                      alt={`${item.category} wallpaper ${item.resolution}`}
                       src={item.thumbs}
                     />
                   </div>

@@ -2,6 +2,7 @@
 
 import { RefreshCw } from "lucide-react";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import axios from "axios";
 import { APIROUTES } from "@/utils/APIROUTES";
 
@@ -42,26 +43,25 @@ export default function CategoryPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter animate-fadeIn">
           {categories.map((cat) => (
-            <a
+            <Link
               key={cat.name}
               className="category-card relative group overflow-hidden h-80 w-full bg-black flex items-center justify-center"
               href={`/search?q=${cat.name}`}
             >
-              <div
-                className="card-bg absolute inset-0 bg-cover bg-center grayscale brightness-75"
-                style={{
-                  backgroundImage: `url('${categoryImages[cat.name] || ""}')`,
-                  backgroundColor: categoryImages[cat.name] ? undefined : "#1a1c1c",
-                }}
+              <img
+                className="card-bg absolute inset-0 w-full h-full object-cover grayscale brightness-75 group-hover:scale-105 transition-transform duration-600"
+                alt={`${cat.name} wallpapers category`}
+                src={categoryImages[cat.name] || ""}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }}
               />
-              <div className="card-overlay absolute inset-0 bg-black/20 transition-colors" />
+              <div className="absolute inset-0 bg-black/20 transition-colors group-hover:bg-black/40" />
               <div className="relative z-10 text-center px-6">
                 <h2 className="font-display-lg text-white mb-2 tracking-tighter uppercase">{cat.name}</h2>
                 <span className="font-label-sm text-white/80 bg-black/40 px-3 py-1 backdrop-blur-sm">
                   {cat.count.toLocaleString()} WALLPAPERS
                 </span>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       )}
