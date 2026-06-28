@@ -1,7 +1,7 @@
 "use client";
 
 import { Download, Heart, Grid3X3, LayoutList, Settings, RefreshCw } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import Link from "next/link";
@@ -13,20 +13,34 @@ export default function ProfilePage() {
   const { loginstate, username, useremail } = useSelector((s: RootState) => s.user);
   const [wallpapers, setWallpapers] = useState<any[]>([]);
   const [wallpapersLoading, setWallpapersLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   useEffect(() => {
     if (!loginstate) router.push("/login");
   }, [loginstate, router]);
 
-  useEffect(() => {
+  const fetchLiked = useCallback(async (p: number, append: boolean) => {
     if (!loginstate) return;
-    axios
-      .get("/api/wallpapers/my-likes", { withCredentials: true })
-      .then(({ data }) => setWallpapers(data.wallpapers))
-      .catch(() => {})
-      .finally(() => setWallpapersLoading(false));
+    if (!append) setWallpapersLoading(true);
+    else setLoadingMore(true);
+    try {
+      const { data } = await axios.get(`/api/wallpapers/my-likes?page=${p}`, { withCredentials: true });
+      setWallpapers((prev) => (append ? [...prev, ...data.wallpapers] : data.wallpapers));
+      setTotalPages(data.totalPages);
+    } catch {}
+    finally {
+      setWallpapersLoading(false);
+      setLoadingMore(false);
+    }
   }, [loginstate]);
+
+  useEffect(() => {
+    setPage(1);
+    fetchLiked(1, false);
+  }, [fetchLiked]);
 
   if (!loginstate) {
     return (
@@ -35,6 +49,12 @@ export default function ProfilePage() {
       </main>
     );
   }
+
+  const handleLoadMore = () => {
+    const next = page + 1;
+    setPage(next);
+    fetchLiked(next, true);
+  };
 
   const initials = username.slice(0, 2).toUpperCase();
 
@@ -130,65 +150,80 @@ export default function ProfilePage() {
           ))}
         </section>
       ) : wallpapers.length > 0 ? (
-        viewMode === "grid" ? (
-          <section className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-gutter mb-16 animate-fadeIn">
-            {wallpapers.map((item: any) => (
-              <Link key={item.id} href={`/allwallpapers/${item.id}`} className="relative group overlay-target cursor-pointer block">
-                <div className="bg-surface-container aspect-[4/5] overflow-hidden">
-                  <img
-                    className="w-full h-full object-cover image-zoom transition-transform duration-500 group-hover:scale-105"
-                    alt={item.id}
-                    src={item.thumbs}
-                  />
-                </div>
-                <div className="overlay-content absolute inset-0 bg-black/60 flex flex-col justify-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="mb-2">
-                    <span className="font-label-sm text-label-sm text-white bg-white/10 px-2 py-0.5 backdrop-blur-sm">
-                      {item.category}
+        <>
+          {viewMode === "grid" ? (
+            <section className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-gutter animate-fadeIn">
+              {wallpapers.map((item: any) => (
+                <Link key={item.id} href={`/allwallpapers/${item.id}`} className="relative group overlay-target cursor-pointer block">
+                  <div className="bg-surface-container aspect-[4/5] overflow-hidden">
+                    <img
+                      className="w-full h-full object-cover image-zoom transition-transform duration-500 group-hover:scale-105"
+                      alt={item.id}
+                      src={item.thumbs}
+                    />
+                  </div>
+                  <div className="overlay-content absolute inset-0 bg-black/60 flex flex-col justify-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="mb-2">
+                      <span className="font-label-sm text-label-sm text-white bg-white/10 px-2 py-0.5 backdrop-blur-sm">
+                        {item.category}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-white border-t border-white/20 pt-3">
+                      <span className="font-meta-data text-meta-data tracking-[0.15em] uppercase truncate">
+                        {item.resolution}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </section>
+          ) : (
+            <div className="divide-y divide-outline-variant border-t border-outline-variant">
+              {wallpapers.map((item: any) => (
+                <Link
+                  key={item.id}
+                  href={`/allwallpapers/${item.id}`}
+                  className="flex items-center gap-6 py-5 group hover:bg-surface-container transition-colors px-2 -mx-2"
+                >
+                  <div className="w-16 h-16 bg-surface-container overflow-hidden shrink-0">
+                    <img
+                      className="w-full h-full object-cover"
+                      alt={item.id}
+                      src={item.thumbs}
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-meta-data text-meta-data text-secondary mt-0.5">
+                      {item.resolution} &bull; {item.category}
+                    </p>
+                  </div>
+                  <div className="hidden sm:flex items-center gap-6 font-meta-data text-meta-data text-secondary shrink-0">
+                    <span className="flex items-center gap-1">
+                      <Heart className="w-3.5 h-3.5" />
+                      {item.likecount}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center text-white border-t border-white/20 pt-3">
-                    <span className="font-meta-data text-meta-data tracking-[0.15em] uppercase truncate">
-                      {item.resolution}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </section>
-        ) : (
-          <div className="mb-16 divide-y divide-outline-variant border-t border-outline-variant">
-            {wallpapers.map((item: any) => (
-              <Link
-                key={item.id}
-                href={`/allwallpapers/${item.id}`}
-                className="flex items-center gap-6 py-5 group hover:bg-surface-container transition-colors px-2 -mx-2"
-              >
-                <div className="w-16 h-16 bg-surface-container overflow-hidden shrink-0">
-                  <img
-                    className="w-full h-full object-cover"
-                    alt={item.id}
-                    src={item.thumbs}
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-meta-data text-meta-data text-secondary mt-0.5">
-                    {item.resolution} &bull; {item.category}
-                  </p>
-                </div>
-                <div className="hidden sm:flex items-center gap-6 font-meta-data text-meta-data text-secondary shrink-0">
-                  <span className="flex items-center gap-1">
-                    <Heart className="w-3.5 h-3.5" />
-                    {item.likecount}
+                  <span className="font-label-sm text-label-sm uppercase underline tracking-tighter text-secondary hover:text-primary transition-colors shrink-0">
+                    View
                   </span>
-                </div>
-                <span className="font-label-sm text-label-sm uppercase underline tracking-tighter text-secondary hover:text-primary transition-colors shrink-0">
-                  View
-                </span>
-              </Link>
-            ))}
-          </div>
-        )
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {page < totalPages && (
+            <div className="flex justify-center py-12">
+              <button
+                onClick={handleLoadMore}
+                disabled={loadingMore}
+                className="px-8 py-3 bg-primary text-on-primary font-label-sm text-label-sm uppercase tracking-wider hover:bg-secondary transition-colors disabled:opacity-60 flex items-center gap-2"
+              >
+                {loadingMore ? <RefreshCw className="w-4 h-4 animate-spin" /> : null}
+                {loadingMore ? "Loading..." : "Load More"}
+              </button>
+            </div>
+          )}
+        </>
       ) : (
         <section className="flex flex-col items-center justify-center py-24 text-center">
           <Heart className="w-16 h-16 text-outline mb-6" />
