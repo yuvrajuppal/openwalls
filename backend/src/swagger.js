@@ -3,7 +3,7 @@ import { formatSwaggerJson } from "./swaggerjsonformater.js";
 const doc = {
   openapi: "3.0.0", // Force 3.0 only
   info: { title: "Openwalls Project API", version: "1.0.0" },
-  servers: [{ url: "http://localhost:3000" }],
+  servers: [{ url: "http://localhost:3000" },{ url: "https://api.openwalls.goosecodes.com" }],
 };
 const outputFile = "../swagger-output.json";
 const endpointsFiles = ["./app.js"]; // Include app.js for full route tree with prefix
