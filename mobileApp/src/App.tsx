@@ -1,15 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import StackNav from './navcomponents/StackNav'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import Homepage from './pages/Homepage'
 
-const App = () => {
-  return (
-  <>
-  <StackNav/>
-  </>
-  )
-}
+const App = () => (
+  <SafeAreaView style={{ flex: 1 }}>
+    <Homepage />
+  </SafeAreaView>
+)
 
 export default App
-
-const styles = StyleSheet.create({})
